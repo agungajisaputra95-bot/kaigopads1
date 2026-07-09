@@ -39,8 +39,7 @@ export const NEXT_EXAM_ROUND = '第39回'
 export const NEXT_EXAM_DATE = '2027-01-31'
 export const NEXT_EXAM_DATE_LABEL = '31 Jan 2027'
 
-// TODO: ganti dengan nomor WhatsApp admin/CS asli sebelum rilis (format: kode negara tanpa +/0 di depan).
-export const ADMIN_WHATSAPP_NUMBER = '6281234567890'
+export const ADMIN_WHATSAPP_NUMBER = '817090574113'
 
 export function buildWhatsappUpgradeLink(message: string) {
   return `https://wa.me/${ADMIN_WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`
