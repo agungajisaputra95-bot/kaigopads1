@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useMemo, useState, type ReactNode } from 'react'
+import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 
 export interface FuriganaMapEntry {
   kanji: string
@@ -26,13 +26,15 @@ export function FuriganaProvider({
   /** Set false untuk konteks yang selalu memaksa satu nilai (mis. Live Preview admin). */
   syncWithStorage?: boolean
 }) {
-  const [showFurigana, setShowFurigana] = useState(() => {
-    if (syncWithStorage && typeof window !== 'undefined') {
-      const stored = window.localStorage.getItem(STORAGE_KEY)
-      if (stored !== null) return stored === 'true'
-    }
-    return initialShowFurigana
-  })
+  const [showFurigana, setShowFurigana] = useState(initialShowFurigana)
+
+  useEffect(() => {
+    if (!syncWithStorage) return
+    const stored = window.localStorage.getItem(STORAGE_KEY)
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- syncing from localStorage post-hydration is the correct fix for SSR mismatch
+    if (stored !== null) setShowFurigana(stored === 'true')
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- run once on mount, after hydration
+  }, [])
 
   const value = useMemo(
     () => ({
