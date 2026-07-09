@@ -38,13 +38,15 @@ export function QuestionCard({
           {diff.label}
         </span>
       </div>
-      <TappableFuriganaText
-        text={text}
-        furiganaMap={furiganaMap}
-        vocabDict={vocabDict}
-        onWordTap={onWordTap}
-        className="jp mt-2.5 block text-[17px] font-medium leading-[1.7] text-[#263238]"
-      />
+      <div className="mt-2.5 rounded-xl border border-[#ECEFF1] bg-white p-4">
+        <TappableFuriganaText
+          text={text}
+          furiganaMap={furiganaMap}
+          vocabDict={vocabDict}
+          onWordTap={onWordTap}
+          className="jp block text-[16px] font-medium leading-[1.9] tracking-wide text-[#263238]"
+        />
+      </div>
     </div>
   )
 }
