@@ -13,8 +13,9 @@ const MENU = [
   { href: '/admin/users/payment', label: 'Payment Tracking', icon: JapaneseYen },
 ]
 
-export function AdminSidebar() {
+export function AdminSidebar({ adminName }: { adminName: string }) {
   const pathname = usePathname()
+  const initial = adminName.trim().charAt(0).toUpperCase() || 'A'
 
   return (
     <div className="flex w-[240px] shrink-0 flex-col bg-[#263238] py-5 text-white">
@@ -55,10 +56,10 @@ export function AdminSidebar() {
       <div className="flex-1" />
       <div className="mx-3 flex items-center gap-2.5 border-t border-white/[0.08] px-2 pt-3.5">
         <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#455A64] text-[13px] font-bold">
-          A
+          {initial}
         </div>
         <div className="min-w-0">
-          <div className="text-xs font-semibold">Aiko Tanaka</div>
+          <div className="truncate text-xs font-semibold">{adminName || 'Admin'}</div>
           <div className="text-[10px] text-[#78909C]">Content Manager</div>
         </div>
       </div>
