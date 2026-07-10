@@ -6,6 +6,7 @@ import { ShieldCheck } from 'lucide-react'
 import { ProfileHeader } from '@/components/profile/ProfileHeader'
 import { MembershipCard } from '@/components/profile/MembershipCard'
 import { SettingsList } from '@/components/profile/SettingsList'
+import { FeedbackCard } from '@/components/profile/FeedbackCard'
 import { createClient } from '@/lib/supabase/client'
 import { buildWhatsappUpgradeLink } from '@/lib/constants'
 import type { FuriganaMapEntry } from '@/types/question'
@@ -59,6 +60,8 @@ export function ProfileClient({ name, email, isPremium, premiumUntil, isAdmin, p
       )}
 
       <SettingsList onLogout={handleLogout} />
+
+      <FeedbackCard />
     </div>
   )
 }

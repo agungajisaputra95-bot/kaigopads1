@@ -176,3 +176,16 @@ alter table vocabulary_progress enable row level security;
 
 create policy "User kelola vocabulary_progress miliknya sendiri" on vocabulary_progress
   for all to authenticated using (auth.uid() = user_id) with check (auth.uid() = user_id);
+
+-- Kritik & saran dari user, dibaca lewat Admin CMS.
+create table feedback (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references auth.users(id),
+  message text not null,
+  created_at timestamptz default now()
+);
+
+alter table feedback enable row level security;
+
+create policy "User kirim & lihat feedback miliknya sendiri" on feedback
+  for all to authenticated using (auth.uid() = user_id) with check (auth.uid() = user_id);

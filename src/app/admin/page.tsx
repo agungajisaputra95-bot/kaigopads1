@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { FileQuestion, BookOpen, Languages, ListTree, ArrowRight, Upload, Users, JapaneseYen } from 'lucide-react'
+import { FileQuestion, BookOpen, Languages, ListTree, ArrowRight, Upload, Users, JapaneseYen, MessageSquareText } from 'lucide-react'
 import { getContentStats } from '@/lib/queries/admin'
 
 export default async function AdminDashboardPage() {
@@ -24,6 +24,7 @@ export default async function AdminDashboardPage() {
     { href: '/admin/import', label: 'Bulk Import', description: 'Import banyak soal sekaligus', icon: Upload, available: false },
     { href: '/admin/users', label: 'User Analytics', description: 'Statistik & progress user', icon: Users, available: true },
     { href: '/admin/users/payment', label: 'Payment Tracking', description: 'Konfirmasi pembayaran manual', icon: JapaneseYen, available: true },
+    { href: '/admin/feedback', label: 'Kritik & Saran', description: 'Masukan dari user', icon: MessageSquareText, available: true },
   ]
 
   return (

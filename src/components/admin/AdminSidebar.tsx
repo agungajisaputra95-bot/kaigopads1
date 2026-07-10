@@ -2,7 +2,7 @@
 
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
-import { LayoutGrid, PenLine, Upload, ListTree, Users, JapaneseYen } from 'lucide-react'
+import { LayoutGrid, PenLine, Upload, ListTree, Users, JapaneseYen, MessageSquareText } from 'lucide-react'
 
 const MENU = [
   { href: '/admin', label: 'Dashboard', icon: LayoutGrid },
@@ -11,6 +11,7 @@ const MENU = [
   { href: '/admin/kamoku', label: 'Manajemen Kamoku', icon: ListTree },
   { href: '/admin/users', label: 'User Analytics', icon: Users },
   { href: '/admin/users/payment', label: 'Payment Tracking', icon: JapaneseYen },
+  { href: '/admin/feedback', label: 'Kritik & Saran', icon: MessageSquareText },
 ]
 
 export function AdminSidebar({ adminName }: { adminName: string }) {
