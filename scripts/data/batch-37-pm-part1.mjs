@@ -1,0 +1,171 @@
+// 第37回（令和6年度）介護福祉士国家試験 午後 問題64-73
+export const SOURCE = '過去問_第37回_2024（想定解答）'
+
+const fm = (pairs) => pairs.map(([kanji, reading]) => ({ kanji, reading }))
+
+export const questions = [
+  {
+    kamoku_id: 2,
+    correct_answer: 4,
+    difficulty: 'hard',
+    exam_frequency: 'high',
+    question_text_jp:
+      '介護福祉に関連する法律に関する次の記述のうち、適切なものを1つ選びなさい。\n（注）1 「高齢者虐待防止法」とは、「高齢者虐待の防止、高齢者の養護者に対する支援等に関する法律」のことである。\n2 「障害者総合支援法」とは、「障害者の日常生活及び社会生活を総合的に支援するための法律」のことである。',
+    furigana_map: fm([['介護福祉', 'かいごふくし'], ['関連', 'かんれん'], ['法律', 'ほうりつ']]),
+    options: [
+      { n: 1, text: '「高齢者虐待防止法」は、福祉六法の1つである。', exp_jp: '福祉六法は生活保護法・児童福祉法・身体障害者福祉法・知的障害者福祉法・老人福祉法・母子及び父子並びに寡婦福祉法の6つで、高齢者虐待防止法は含まれません。', exp_id: 'Enam UU kesejahteraan dasar Jepang tidak termasuk UU Pencegahan Kekerasan Lansia — jadi ini bukan salah satunya.' },
+      { n: 2, text: '「障害者総合支援法」は、障害者基本計画の策定を義務づけている。', exp_jp: '障害者基本計画の策定は障害者基本法に基づくもので、障害者総合支援法の規定ではありません。', exp_id: 'Rencana dasar disabilitas diatur UU Dasar Disabilitas, bukan UU Dukungan Komprehensif Disabilitas.' },
+      { n: 3, text: '社会福祉法によって、社会福祉士の定義が規定されている。', exp_jp: '社会福祉士の定義は、社会福祉士及び介護福祉士法によって規定されています。', exp_id: 'Definisi pekerja sosial diatur dalam UU Pekerja Sosial & Pekerja Kaigo, bukan UU Kesejahteraan Sosial.' },
+      { n: 4, text: '介護保険法は、国民の共同連帯の理念に基づいて介護保険制度を設けている。', exp_jp: '介護保険法第1条には「国民の共同連帯の理念」に基づき介護保険制度を設けることが明記されています。', exp_id: 'Pasal 1 UU Asuransi Perawatan secara eksplisit menyatakan sistem ini didirikan berdasarkan "prinsip solidaritas bersama warga negara".', correct: true },
+      { n: 5, text: '医師法によって、介護福祉の業務の一部として医行為が認められている。', exp_jp: '喀痰吸引等の一部の医行為が介護福祉士に認められているのは、社会福祉士及び介護福祉士法の改正によるものです。', exp_id: 'Sebagian tindakan medis (seperti penyedotan dahak) diizinkan bagi pekerja kaigo lewat revisi UU Pekerja Sosial & Pekerja Kaigo, bukan UU Praktik Kedokteran.' },
+    ],
+  },
+  {
+    kamoku_id: 2,
+    correct_answer: 3,
+    difficulty: 'medium',
+    exam_frequency: 'high',
+    question_text_jp: '社会福祉士及び介護福祉士法に関する次の記述のうち、適切なものを1つ選びなさい。',
+    furigana_map: fm([['社会福祉士', 'しゃかいふくしし'], ['介護福祉士法', 'かいごふくししほう']]),
+    options: [
+      { n: 1, text: '資質向上のために、5年に1回、資格更新研修を受けなければならない。', exp_jp: '介護福祉士に資格更新研修の義務はありません（更新制度自体がありません）。', exp_id: 'Sertifikasi pekerja kaigo tidak memiliki sistem pembaruan berkala; tidak ada kewajiban pelatihan ulang 5 tahunan.' },
+      { n: 2, text: '社会福祉士の業務を介護福祉士が行うことは禁じられている。', exp_jp: 'このような業務独占の規定はなく、介護福祉士は名称独占の資格です。', exp_id: 'Tidak ada aturan monopoli tugas seperti ini; sertifikasi pekerja kaigo bersifat monopoli gelar, bukan monopoli tugas.' },
+      { n: 3, text: '介護福祉士の信用を傷つける行為をしてはならない。', exp_jp: '社会福祉士及び介護福祉士法には、信用失墜行為の禁止が明記されています。', exp_id: 'UU ini secara jelas melarang tindakan yang mencoreng kredibilitas profesi pekerja kaigo.', correct: true },
+      { n: 4, text: '介護福祉士は、その業を辞した後は秘密保持義務が解除される。', exp_jp: '秘密保持義務は、介護福祉士でなくなった後も継続します。', exp_id: 'Kewajiban menjaga kerahasiaan tetap berlaku bahkan setelah tidak lagi berprofesi sebagai pekerja kaigo.' },
+      { n: 5, text: '介護福祉士国家試験に合格した日から、介護福祉士を名乗ることができる。', exp_jp: '合格しただけでは足りず、介護福祉士としての登録を受けて初めて名乗ることができます。', exp_id: 'Lulus ujian saja belum cukup — perlu registrasi resmi sebagai pekerja kaigo dulu sebelum boleh memakai gelar tersebut.' },
+    ],
+  },
+  {
+    kamoku_id: 2,
+    correct_answer: 2,
+    difficulty: 'hard',
+    exam_frequency: 'high',
+    question_text_jp:
+      'Ａさん（75歳、女性）は、3か月前に、血管性認知症（vascular dementia）を発症し、軽度の左片麻痺｛ひだりかたまひ｝で杖歩行｛つえほこう｝となり、要介護3と認定された。Ａさんは、料理が大好きで、娘と一緒に食事を作ることを楽しみに生活していた。1か月前から認知症（dementia）が進行し、ユニット型介護老人福祉施設に入所した。Ａさんは夕方になると、「ご飯の支度をしないといけないから帰ります」と言いながら、興奮して歩き回る様子がみられるようになった。\nＡさんへの介護福祉職の対応として、最も適切なものを1つ選びなさい。',
+    furigana_map: fm([
+      ['血管性認知症', 'けっかんせいにんちしょう'], ['発症', 'はっしょう'], ['軽度', 'けいど'], ['左片麻痺', 'ひだりかたまひ'],
+      ['杖歩行', 'つえほこう'], ['要介護', 'ようかいご'], ['認定', 'にんてい'], ['料理', 'りょうり'], ['娘', 'むすめ'],
+      ['進行', 'しんこう'], ['ユニット型', 'ゆにっとがた'], ['介護老人福祉施設', 'かいごろうじんふくししせつ'], ['入所', 'にゅうしょ'],
+      ['夕方', 'ゆうがた'], ['支度', 'したく'], ['興奮', 'こうふん'], ['歩', 'ある'],
+    ]),
+    options: [
+      { n: 1, text: '居室に鍵をかけて、自室で過ごしてもらう。', exp_jp: '身体拘束・行動制限にあたり、Ａさんの不安を悪化させる可能性がある不適切な対応です。', exp_id: 'Ini termasuk pembatasan gerak/kurungan fisik, berpotensi memperparah kecemasan Aさん — respons yang tidak tepat.' },
+      { n: 2, text: '介護福祉職と一緒に、夕食の準備をしてもらう。', exp_jp: 'Ａさんが大切にしてきた「料理をする」役割を活かし、「ご飯の支度をしないと」という不安の背景にある気持ちに寄り添う対応です。', exp_id: 'Memanfaatkan peran "memasak" yang selama ini penting bagi Aさん, sekaligus meredakan kecemasan di balik ucapan "harus siapkan makan malam".', correct: true },
+      { n: 3, text: '杖｛つえ｝を預かり、低めの丸椅子に座ってもらう。', exp_jp: '行動を制限するだけで、Ａさんの不安の根本には対応できていません。', exp_id: 'Hanya membatasi gerak, tidak menjawab akar kecemasan Aさん.' },
+      { n: 4, text: '介護福祉職の判断で、向精神薬を服用してもらう。', exp_jp: '医師の指示なく介護福祉職の判断で薬剤を投与することは認められていません。', exp_id: 'Pekerja kaigo tidak berwenang memberi obat psikotropika tanpa instruksi dokter.' },
+      { n: 5, text: 'ここがＡさんの自宅であることを、理解してもらう。', exp_jp: '事実を一方的に押しつける対応は、認知症の人の不安をかえって強める可能性があり、有効とはいえません。', exp_id: 'Memaksakan fakta secara sepihak berisiko memperparah kecemasan penderita demensia, kurang efektif.' },
+    ],
+  },
+  {
+    kamoku_id: 2,
+    correct_answer: 2,
+    difficulty: 'hard',
+    exam_frequency: 'medium',
+    question_text_jp:
+      'ＩＣＦ（International Classification of Functioning, Disability and Health：国際生活機能分類）における「参加」と「活動」の2つが関連した、認知症の人の支援に関する記述として、最も適切なものを1つ選びなさい。',
+    furigana_map: fm([['国際生活機能分類', 'こくさいせいかつきのうぶんるい'], ['参加', 'さんか'], ['活動', 'かつどう']]),
+    options: [
+      { n: 1, text: '若年性アルツハイマー型認知症（dementia of the Alzheimer’s type with early onset）があり、治療している。', exp_jp: 'これは「健康状態」や「心身機能・身体構造」のレベルの記述であり、「参加」「活動」とは異なります。', exp_id: 'Ini deskripsi tingkat "kondisi kesehatan" atau "fungsi tubuh", bukan "partisipasi" & "aktivitas".' },
+      { n: 2, text: '認知症カフェに通い、体操をしている。', exp_jp: '「通う」ことは社会への参加、「体操をする」ことは活動にあたり、参加と活動の両方が関連しています。', exp_id: '"Pergi ke" adalah partisipasi sosial, "senam" adalah aktivitas — keduanya terkait sekaligus.', correct: true },
+      { n: 3, text: '近所に住む長男が、買物を代行している。', exp_jp: 'これは本人の活動ではなく、家族による代行（環境因子側の支援）です。', exp_id: 'Ini bukan aktivitas orang itu sendiri, melainkan dukungan pengganti dari keluarga (faktor lingkungan).' },
+      { n: 4, text: '自宅にある広い庭を、バリアフリー化している。', exp_jp: 'これは環境因子の整備であり、参加・活動そのものの記述ではありません。', exp_id: 'Ini penataan faktor lingkungan, bukan deskripsi partisipasi/aktivitas itu sendiri.' },
+      { n: 5, text: '見当識障害があり、ＧＰＳ装置を身に着けている。', exp_jp: 'これは福祉用具（環境因子）の活用に関する記述です。', exp_id: 'Ini deskripsi pemakaian alat bantu (faktor lingkungan), bukan partisipasi/aktivitas.' },
+    ],
+  },
+  {
+    kamoku_id: 2,
+    correct_answer: 3,
+    difficulty: 'hard',
+    exam_frequency: 'high',
+    question_text_jp: '次の記述のうち、介護保険制度における訪問介護員（ホームヘルパー）が行うサービス内容として、最も適切なものを1つ選びなさい。',
+    furigana_map: fm([['訪問介護員', 'ほうもんかいごいん']]),
+    options: [
+      { n: 1, text: '利用者が大切にしている庭の植木に、水やりをする。', exp_jp: '本人の日常生活に直接必要な援助にあたらないため、原則として訪問介護のサービス範囲外です。', exp_id: 'Bukan bantuan langsung untuk kehidupan sehari-hari pengguna, pada prinsipnya di luar cakupan layanan kunjungan.' },
+      { n: 2, text: '利用者が長年飼っている猫のペットフードを、購入してくる。', exp_jp: 'ペットの世話は生活援助の対象外とされています。', exp_id: 'Merawat hewan peliharaan tidak termasuk dalam bantuan hidup sehari-hari yang dicakup.' },
+      { n: 3, text: '掃き掃除をする習慣のある利用者と一緒に、寝室をほうきで掃除する。', exp_jp: '利用者と一緒に行うことで、本人の力を活かした自立支援型の家事援助として適切です。', exp_id: 'Melakukan bersama pengguna layanan sesuai kebiasaannya adalah bentuk bantuan rumah tangga yang mendukung kemandirian, dan termasuk layanan yang sesuai.', correct: true },
+      { n: 4, text: '利用者と一緒に、近所のラーメン屋に行く。', exp_jp: '私的な外食への同行は、訪問介護の通常のサービス範囲外です。', exp_id: 'Menemani makan di luar untuk keperluan pribadi berada di luar cakupan layanan kunjungan biasa.' },
+      { n: 5, text: '利用者のクレジットカードを預かって、買物を代行する。', exp_jp: '金銭・貴重品の管理を伴う行為はホームヘルパーの業務範囲外です。', exp_id: 'Tindakan yang melibatkan pengelolaan uang/barang berharga berada di luar tugas pendamping rumah.' },
+    ],
+  },
+  {
+    kamoku_id: 2,
+    correct_answer: 1,
+    difficulty: 'hard',
+    exam_frequency: 'medium',
+    question_text_jp: '次の記述のうち、介護従事者を守る法制度として、正しいものを1つ選びなさい。',
+    furigana_map: fm([['介護従事者', 'かいごじゅうじしゃ'], ['法制度', 'ほうせいど']]),
+    options: [
+      { n: 1, text: '労働安全衛生法では、年に1回以上の健康診断を行うことを義務づけている。', exp_jp: '労働安全衛生法は、事業者に対し年1回以上の定期健康診断の実施を義務づけています。', exp_id: 'UU Kesehatan & Keselamatan Kerja mewajibkan pemberi kerja melakukan pemeriksaan kesehatan berkala minimal setahun sekali.', correct: true },
+      { n: 2, text: '労働者災害補償保険法では、労働時間、賃金、休暇などの労働条件を定めている。', exp_jp: '労働時間・賃金・休暇などの労働条件は労働基準法で定められています。', exp_id: 'Jam kerja, upah, dan cuti diatur dalam UU Standar Ketenagakerjaan, bukan UU Asuransi Kecelakaan Kerja.' },
+      { n: 3, text: '環境基本法では、快適な職場環境の形成の促進を定めている。', exp_jp: '快適な職場環境の形成促進は、労働安全衛生法の趣旨に含まれます。', exp_id: 'Promosi lingkungan kerja yang nyaman termasuk dalam UU Kesehatan & Keselamatan Kerja, bukan UU Dasar Lingkungan Hidup.' },
+      { n: 4, text: '介護休業は、対象家族1名につき、毎年93日間を取得できる。', exp_jp: '介護休業は、対象家族1人につき「通算93日」まで（毎年ではない）取得できる制度です。', exp_id: 'Cuti perawatan keluarga bisa diambil total 93 hari per anggota keluarga (bukan 93 hari setiap tahun).' },
+      { n: 5, text: '出生時育児休業は、子の出生後から8週間取得できる。', exp_jp: '正しくは、子の出生後8週間以内に、通算4週間まで取得できる制度（産後パパ育休）です。', exp_id: 'Yang benar: bisa diambil hingga total 4 minggu dalam 8 minggu setelah kelahiran anak (cuti ayah pasca kelahiran), bukan 8 minggu penuh.' },
+    ],
+  },
+  {
+    kamoku_id: 2,
+    correct_answer: 3,
+    difficulty: 'medium',
+    exam_frequency: 'medium',
+    question_text_jp:
+      'Ｂさん（68歳、女性、要介護1）は、ヨーロッパで生まれ育ち、50歳のときに日本人と結婚した。65歳で夫と共に日本で暮らすようになったが、日本語は十分に理解できない。半年前に、脳梗塞（cerebral infarction）を起こし、利き手に麻痺｛まひ｝があり、立ち上がりも不安定である。現在は、介護老人保健施設に入所し、在宅復帰へ向けたリハビリテーションを行っている。Ｂさんはこれまでの生活様式を守り、自宅で自分のペースで食事ができるようになりたいと希望している。\n次の記述のうち、Ｂさんへの介護福祉職の対応として、最も適切なものを1つ選びなさい。',
+    furigana_map: fm([
+      ['要介護', 'ようかいご'], ['結婚', 'けっこん'], ['夫', 'おっと'], ['日本語', 'にほんご'], ['理解', 'りかい'],
+      ['脳梗塞', 'のうこうそく'], ['利き手', 'ききて'], ['麻痺', 'まひ'], ['立ち上がり', 'たちあがり'], ['不安定', 'ふあんてい'],
+      ['介護老人保健施設', 'かいごろうじんほけんしせつ'], ['入所', 'にゅうしょ'], ['在宅復帰', 'ざいたくふっき'],
+      ['生活様式', 'せいかつようしき'], ['希望', 'きぼう'],
+    ]),
+    options: [
+      { n: 1, text: '入所中は母語を使わずに、日本語を話すように伝える。', exp_jp: 'Ｂさんの文化的アイデンティティを否定することになり、不適切です。', exp_id: 'Ini menyangkal identitas budaya Bさん, tindakan yang tidak tepat.' },
+      { n: 2, text: '居室の床に布団を敷いて、寝起きができるようにする。', exp_jp: 'Ｂさんの生活様式を確認せず一方的に決めるもので、本人の希望を尊重した対応とはいえません。', exp_id: 'Menentukan sepihak tanpa mengecek gaya hidup Bさん, bukan respons yang menghormati keinginannya.' },
+      { n: 3, text: '自分で食事ができるように、自助具の使用状況を確認する。', exp_jp: '「自宅で自分のペースで食事ができるようになりたい」というＢさんの希望に沿った自立支援の対応です。', exp_id: 'Sesuai keinginan Bさん untuk "bisa makan dengan ritme sendiri di rumah" — dukungan kemandirian yang tepat.', correct: true },
+      { n: 4, text: 'ほかの利用者と同じ時間に食べ終えるように伝える。', exp_jp: '「自分のペースで」という本人の希望に反する対応です。', exp_id: 'Bertentangan dengan keinginan Bさん untuk makan "dengan ritmenya sendiri".' },
+      { n: 5, text: '日本の生活に合わせるように、余暇活動の内容は介護福祉職が判断する。', exp_jp: '本人の自己決定を無視した一方的な対応です。', exp_id: 'Tindakan sepihak yang mengabaikan hak menentukan pilihan sendiri bagi Bさん.' },
+    ],
+  },
+  {
+    kamoku_id: 2,
+    correct_answer: 3,
+    difficulty: 'medium',
+    exam_frequency: 'high',
+    question_text_jp: '次の記述のうち、チームアプローチに関するものとして、適切なものを1つ選びなさい。',
+    furigana_map: fm([['チームアプローチ', 'ちーむあぷろーち']]),
+    options: [
+      { n: 1, text: '介護福祉職が利用者のところに行って、相談、支援を行う。', exp_jp: 'これは個別の訪問支援の説明であり、複数職種の協働を前提とするチームアプローチとは異なります。', exp_id: 'Ini deskripsi kunjungan dukungan individual, berbeda dari pendekatan tim yang mengandaikan kolaborasi lintas profesi.' },
+      { n: 2, text: '障害者が、地域の資源を活用して、共生社会の実現を目指す。', exp_jp: 'これはノーマライゼーションや地域共生の考え方に近く、チームアプローチそのものの説明ではありません。', exp_id: 'Ini lebih dekat konsep normalisasi/hidup berdampingan komunitas, bukan penjelasan pendekatan tim itu sendiri.' },
+      { n: 3, text: '複数の専門職が共通の目標に向かって協働し、課題解決に取り組む。', exp_jp: 'これはチームアプローチの定義そのものです。複数の専門職が連携し、共通の目標達成のために取り組みます。', exp_id: 'Ini definisi pendekatan tim itu sendiri — berbagai profesi bekerja sama menuju tujuan bersama.', correct: true },
+      { n: 4, text: '利用者に代わって、専門職がサービスを決定する。', exp_jp: '利用者の自己決定を無視するもので、チームアプローチの考え方に反します。', exp_id: 'Mengabaikan hak menentukan pilihan sendiri bagi pengguna layanan, bertentangan dengan prinsip pendekatan tim.' },
+      { n: 5, text: '当事者が集まって体験談を話し、共に支えあう。', exp_jp: 'これはセルフヘルプグループ（ピアサポート）の説明です。', exp_id: 'Ini penjelasan kelompok dukungan sesama (peer support), bukan pendekatan tim.' },
+    ],
+  },
+  {
+    kamoku_id: 2,
+    correct_answer: 5,
+    difficulty: 'hard',
+    exam_frequency: 'high',
+    question_text_jp: '介護保険施設における防災対策に関する次の記述のうち、最も適切なものを1つ選びなさい。',
+    furigana_map: fm([['介護保険施設', 'かいごほけんしせつ'], ['防災対策', 'ぼうさいたいさく']]),
+    options: [
+      { n: 1, text: '介護福祉士は、災害派遣福祉チームで活動することが義務づけられている。', exp_jp: '災害派遣福祉チーム（DWAT）への参加は、希望者による登録制であり義務ではありません。', exp_id: 'Partisipasi di Tim Kesejahteraan Bencana (DWAT) bersifat sukarela lewat pendaftaran, bukan kewajiban.' },
+      { n: 2, text: '介護福祉士は、防災スキル向上のために、防災士の資格取得が義務づけられている。', exp_jp: '防災士資格の取得義務はありません。', exp_id: 'Tidak ada kewajiban memperoleh sertifikasi ahli kebencanaan.' },
+      { n: 3, text: '災害対策基本法に基づき、個別避難計画の作成が施設長に義務づけられている。', exp_jp: '個別避難計画の作成義務は市町村にあり、施設長に課された義務ではありません。', exp_id: 'Kewajiban menyusun rencana evakuasi individual ada pada pemerintah kota, bukan kepala fasilitas.' },
+      { n: 4, text: '一般的に、飲料水と非常食は1日分の備蓄が義務づけられている。', exp_jp: '一般的に推奨・想定されているのは3日分以上（できれば1週間分）の備蓄で、1日分では不十分とされています。', exp_id: 'Umumnya direkomendasikan cadangan minimal 3 hari (idealnya 1 minggu), bukan hanya 1 hari.' },
+      { n: 5, text: '災害時等に備えて、業務継続計画（ＢＣＰ：Business Continuity Plan）の策定が義務づけられている。', exp_jp: '2021年度の介護報酬改定により、介護保険施設・事業者にＢＣＰの策定が義務化されました。', exp_id: 'Sejak revisi tarif perawatan 2021, fasilitas/penyedia layanan asuransi perawatan diwajibkan menyusun rencana keberlangsungan usaha (BCP).', correct: true },
+    ],
+  },
+  {
+    kamoku_id: 2,
+    correct_answer: 4,
+    difficulty: 'medium',
+    exam_frequency: 'medium',
+    question_text_jp: '次のうち、結核（tuberculosis）の予防対策に該当するものとして、最も適切なものを1つ選びなさい。',
+    furigana_map: fm([['結核', 'けっかく'], ['予防対策', 'よぼうたいさく']]),
+    options: [
+      { n: 1, text: '便座のアルコール消毒', exp_jp: '接触感染対策であり、結核（空気感染）の直接的な予防対策ではありません。', exp_id: 'Ini pencegahan penularan sentuhan, bukan langsung mencegah TBC (penularan lewat udara).' },
+      { n: 2, text: '肺炎球菌ワクチンの接種', exp_jp: '肺炎球菌感染症の予防であり、結核とは別の対策です。', exp_id: 'Ini mencegah infeksi pneumokokus, berbeda dari pencegahan TBC.' },
+      { n: 3, text: '紫外線を避けた生活', exp_jp: '結核予防として一般に推奨されるのは十分な換気であり、紫外線を避けることは推奨されません。', exp_id: 'Yang umum direkomendasikan justru ventilasi yang baik, bukan menghindari sinar UV.' },
+      { n: 4, text: '年に1回の胸部Ｘ線検査', exp_jp: '胸部Ｘ線検査による定期的なスクリーニングは、結核の早期発見・予防対策として広く行われています。', exp_id: 'Skrining rontgen dada berkala secara luas dipakai untuk deteksi dini & pencegahan TBC.', correct: true },
+      { n: 5, text: '50℃以上の温水によるリネン類の洗濯', exp_jp: '結核は主に空気感染（飛沫核感染）であり、リネンの洗濯だけでは直接的な予防対策になりません。', exp_id: 'TBC terutama menular lewat udara, mencuci linen saja tidak jadi pencegahan langsung yang efektif.' },
+    ],
+  },
+]
