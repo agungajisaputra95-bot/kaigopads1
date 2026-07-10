@@ -1,0 +1,67 @@
+'use client'
+
+import { useActionState } from 'react'
+import { updatePassword } from '@/app/(auth)/actions'
+
+export function ResetPasswordForm() {
+  const [state, formAction, pending] = useActionState(updatePassword, undefined)
+
+  return (
+    <form action={formAction} className="flex flex-col gap-4">
+      <div>
+        <h1 className="text-xl font-extrabold text-[#263238]">Buat Password Baru</h1>
+        <p className="mt-1 text-sm text-[#78909C]">Masukkan password baru untuk akun kamu.</p>
+      </div>
+
+      {state?.message && (
+        <div className="rounded-lg bg-[#E53935]/10 p-3 text-xs font-medium text-[#C62828]">{state.message}</div>
+      )}
+
+      <div>
+        <label htmlFor="password" className="mb-1.5 block text-xs font-bold text-[#78909C]">
+          Password Baru
+        </label>
+        <input
+          id="password"
+          name="password"
+          type="password"
+          autoComplete="new-password"
+          className="h-11 w-full rounded-lg border border-[#CFD8DC] px-3 text-sm text-[#263238]"
+          placeholder="Minimal 8 karakter"
+        />
+        {state?.errors?.password && (
+          <ul className="mt-1 list-inside list-disc text-xs text-[#E53935]">
+            {state.errors.password.map((err) => (
+              <li key={err}>{err}</li>
+            ))}
+          </ul>
+        )}
+      </div>
+
+      <div>
+        <label htmlFor="confirmPassword" className="mb-1.5 block text-xs font-bold text-[#78909C]">
+          Konfirmasi Password
+        </label>
+        <input
+          id="confirmPassword"
+          name="confirmPassword"
+          type="password"
+          autoComplete="new-password"
+          className="h-11 w-full rounded-lg border border-[#CFD8DC] px-3 text-sm text-[#263238]"
+          placeholder="Ulangi password baru"
+        />
+        {state?.errors?.confirmPassword && (
+          <p className="mt-1 text-xs text-[#E53935]">{state.errors.confirmPassword[0]}</p>
+        )}
+      </div>
+
+      <button
+        type="submit"
+        disabled={pending}
+        className="mt-1 h-11 w-full rounded-xl bg-[#1565C0] text-sm font-bold text-white disabled:opacity-60"
+      >
+        {pending ? 'Menyimpan…' : 'Simpan Password Baru'}
+      </button>
+    </form>
+  )
+}

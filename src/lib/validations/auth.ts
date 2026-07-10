@@ -43,3 +43,37 @@ export type RegisterFormState =
       success?: boolean
     }
   | undefined
+
+export const ForgotPasswordSchema = z.object({
+  email: z.email({ error: 'Masukkan email yang valid.' }),
+})
+
+export const ResetPasswordSchema = z
+  .object({
+    password: z
+      .string()
+      .min(8, { error: 'Password minimal 8 karakter.' })
+      .regex(/[a-zA-Z]/, { error: 'Password harus mengandung huruf.' })
+      .regex(/[0-9]/, { error: 'Password harus mengandung angka.' }),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    error: 'Konfirmasi password tidak cocok.',
+    path: ['confirmPassword'],
+  })
+
+export type ForgotPasswordFormState =
+  | {
+      errors?: { email?: string[] }
+      message?: string
+      success?: boolean
+    }
+  | undefined
+
+export type ResetPasswordFormState =
+  | {
+      errors?: { password?: string[]; confirmPassword?: string[] }
+      message?: string
+      success?: boolean
+    }
+  | undefined
