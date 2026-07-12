@@ -2,16 +2,13 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { WeakSubjectsList } from '@/components/analytics/WeakSubjectsList'
 import { WeakVocabList } from '@/components/vocabulary/WeakVocabList'
-import { createClient } from '@/lib/supabase/server'
+import { getCachedUser } from '@/lib/supabase/server'
 import { getKamokuMasteryStats, getWeakQueueCount } from '@/lib/queries/dashboard'
 import { getWeakVocabQueue } from '@/lib/queries/vocabulary'
 import { buildWeakSubjects } from '@/lib/weakSubjects'
 
 export default async function WeakReviewPage() {
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const user = await getCachedUser()
 
   if (!user) redirect('/login')
 

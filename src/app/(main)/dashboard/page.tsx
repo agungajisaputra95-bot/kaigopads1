@@ -5,7 +5,7 @@ import { ScorePredictionWidget } from '@/components/dashboard/ScorePredictionWid
 import { SubjectOverviewGrid, type PartSummary } from '@/components/dashboard/SubjectOverviewGrid'
 import { WeakQueueCard } from '@/components/dashboard/WeakQueueCard'
 import { StudyStreakCard } from '@/components/dashboard/StudyStreakCard'
-import { createClient } from '@/lib/supabase/server'
+import { getCachedUser } from '@/lib/supabase/server'
 import {
   getKamokuMasteryStats,
   getWeakQueueCount,
@@ -73,10 +73,7 @@ function buildPartSummaries(stats: Record<number, KamokuStat>): PartSummary[] {
 }
 
 export default async function DashboardPage() {
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const user = await getCachedUser()
 
   if (!user) redirect('/login')
 

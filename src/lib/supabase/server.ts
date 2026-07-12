@@ -1,5 +1,6 @@
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
+import { cache } from 'react'
 
 export async function createClient() {
   const cookieStore = await cookies()
@@ -26,3 +27,13 @@ export async function createClient() {
     }
   )
 }
+
+// Middleware already validates the session for this request; this dedupes the
+// repeated auth.getUser() network round-trip across layout + page in the same render.
+export const getCachedUser = cache(async () => {
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  return user
+})

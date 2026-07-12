@@ -18,6 +18,17 @@ export function masteryHeat(pct: number): { bg: string; fg: string } {
   return { bg: 'rgba(229,57,53,0.14)', fg: '#C62828' }
 }
 
+// Normalisasi nomor WhatsApp (ID: 08xx / +62 / 62, JP: 070·080·090 / +81 / 81) ke format
+// digit-only berkode negara yang dipakai wa.me (mis. "6281234567" atau "817012345678").
+export function toWaMeNumber(raw: string): string {
+  const digits = raw.replace(/[^\d+]/g, '')
+  if (digits.startsWith('+')) return digits.slice(1)
+  if (digits.startsWith('62') || digits.startsWith('81')) return digits
+  if (digits.startsWith('08')) return `62${digits.slice(1)}`
+  if (/^0[789]0/.test(digits)) return `81${digits.slice(1)}`
+  return digits
+}
+
 // Hitung sisa hari (dibulatkan ke atas) dari sekarang sampai targetDate ('YYYY-MM-DD').
 // Dipisah dari komponen supaya panggilan Date.now() tidak dianggap impure di render body.
 export function daysUntil(targetDate: string): number {

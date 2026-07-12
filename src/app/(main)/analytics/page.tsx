@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 import { AnalyticsClient } from '@/components/analytics/AnalyticsClient'
 import type { MatrixPart } from '@/components/analytics/SubjectMasteryMatrix'
-import { createClient } from '@/lib/supabase/server'
+import { getCachedUser } from '@/lib/supabase/server'
 import { getKamokuMasteryStats, type KamokuStat } from '@/lib/queries/dashboard'
 import { getExamScoreHistory, getStudyTimeAnalytics } from '@/lib/queries/analytics'
 import { buildWeakSubjects } from '@/lib/weakSubjects'
@@ -30,10 +30,7 @@ function buildMatrixParts(stats: Record<number, KamokuStat>): MatrixPart[] {
 }
 
 export default async function AnalyticsPage() {
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const user = await getCachedUser()
 
   if (!user) redirect('/login')
 

@@ -4,6 +4,7 @@ export interface UserPaymentRow {
   id: string
   email: string
   name: string | null
+  whatsapp: string | null
   createdAt: string
   isPremium: boolean
   premiumUntil: string | null
@@ -29,6 +30,7 @@ export async function getUsersWithPremiumStatus(): Promise<UserPaymentRow[]> {
         id: u.id,
         email: u.email ?? '(tanpa email)',
         name: (u.user_metadata?.full_name as string | undefined) ?? null,
+        whatsapp: (u.user_metadata?.whatsapp as string | undefined) ?? null,
         createdAt: u.created_at,
         isPremium: premium?.is_premium ?? false,
         premiumUntil: premium?.premium_until ?? null,

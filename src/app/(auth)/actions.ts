@@ -45,6 +45,7 @@ export async function register(_state: RegisterFormState, formData: FormData): P
   const validated = RegisterSchema.safeParse({
     name: formData.get('name'),
     email: formData.get('email'),
+    whatsapp: formData.get('whatsapp'),
     password: formData.get('password'),
     confirmPassword: formData.get('confirmPassword'),
   })
@@ -57,7 +58,7 @@ export async function register(_state: RegisterFormState, formData: FormData): P
   const { error } = await supabase.auth.signUp({
     email: validated.data.email,
     password: validated.data.password,
-    options: { data: { full_name: validated.data.name } },
+    options: { data: { full_name: validated.data.name, whatsapp: validated.data.whatsapp } },
   })
 
   if (error) {

@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
 import { CustomSessionClient } from '@/components/practice/CustomSessionClient'
-import { createClient } from '@/lib/supabase/server'
+import { getCachedUser } from '@/lib/supabase/server'
 import { getFilteredQuestions } from '@/lib/queries/questions'
 import { getVocabularyDictForKamokuIds } from '@/lib/queries/vocabulary'
 
@@ -11,10 +11,7 @@ interface CustomSessionPageProps {
 export default async function CustomSessionPage({ searchParams }: CustomSessionPageProps) {
   const params = await searchParams
 
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const user = await getCachedUser()
 
   if (!user) redirect('/login')
 

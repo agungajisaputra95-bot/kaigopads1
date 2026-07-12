@@ -4,6 +4,7 @@ import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { confirmPayment, revokePremium } from '@/app/admin/users/payment/actions'
 import type { UserPaymentRow } from '@/lib/queries/payments'
+import { toWaMeNumber } from '@/lib/utils'
 
 const DURATION_OPTIONS = [
   { months: 1, label: '1 bln' },
@@ -58,6 +59,16 @@ export function PaymentTrackingClient({ users }: { users: UserPaymentRow[] }) {
             <div className="min-w-0">
               <div className="truncate text-sm font-bold text-[#263238]">{u.name ?? u.email}</div>
               {u.name && <div className="truncate text-xs text-[#90A4AE]">{u.email}</div>}
+              {u.whatsapp && (
+                <a
+                  href={`https://wa.me/${toWaMeNumber(u.whatsapp)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-0.5 inline-block truncate text-xs font-semibold text-[#25D366]"
+                >
+                  {u.whatsapp}
+                </a>
+              )}
             </div>
             <span className="whitespace-nowrap text-xs text-[#90A4AE]">{formatDate(u.createdAt)}</span>
             <div className="whitespace-nowrap">

@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
 import { ProfileClient } from '@/components/profile/ProfileClient'
-import { createClient } from '@/lib/supabase/server'
+import { getCachedUser } from '@/lib/supabase/server'
 import { getUserPremiumStatus } from '@/lib/queries/profile'
 import { KAMOKU_LIST } from '@/lib/constants'
 
@@ -10,10 +10,7 @@ interface ProfilePageProps {
 
 export default async function ProfilePage({ searchParams }: ProfilePageProps) {
   const { paywall } = await searchParams
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const user = await getCachedUser()
 
   if (!user) redirect('/login')
 

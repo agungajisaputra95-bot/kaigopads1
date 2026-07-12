@@ -65,6 +65,21 @@ export function RegisterForm() {
       </div>
 
       <div>
+        <label htmlFor="whatsapp" className="mb-1.5 block text-xs font-bold text-[#78909C]">
+          Nomor WhatsApp
+        </label>
+        <input
+          id="whatsapp"
+          name="whatsapp"
+          type="tel"
+          autoComplete="tel"
+          className="h-11 w-full rounded-lg border border-[#CFD8DC] px-3 text-sm text-[#263238]"
+          placeholder="08xx… (ID) atau 070/080/090… (JP)"
+        />
+        {state?.errors?.whatsapp && <p className="mt-1 text-xs text-[#E53935]">{state.errors.whatsapp[0]}</p>}
+      </div>
+
+      <div>
         <label htmlFor="password" className="mb-1.5 block text-xs font-bold text-[#78909C]">
           Password
         </label>
