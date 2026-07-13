@@ -1,10 +1,12 @@
 'use client'
 
-import { useActionState } from 'react'
+import { useActionState, useState } from 'react'
+import { Eye, EyeOff } from 'lucide-react'
 import { updatePassword } from '@/app/(auth)/actions'
 
 export function ResetPasswordForm() {
   const [state, formAction, pending] = useActionState(updatePassword, undefined)
+  const [showPassword, setShowPassword] = useState(false)
 
   return (
     <form action={formAction} className="flex flex-col gap-4">
@@ -21,14 +23,24 @@ export function ResetPasswordForm() {
         <label htmlFor="password" className="mb-1.5 block text-xs font-bold text-[#78909C]">
           Password Baru
         </label>
-        <input
-          id="password"
-          name="password"
-          type="password"
-          autoComplete="new-password"
-          className="h-11 w-full rounded-lg border border-[#CFD8DC] px-3 text-sm text-[#263238]"
-          placeholder="Minimal 8 karakter"
-        />
+        <div className="relative">
+          <input
+            id="password"
+            name="password"
+            type={showPassword ? 'text' : 'password'}
+            autoComplete="new-password"
+            className="h-11 w-full rounded-lg border border-[#CFD8DC] px-3 pr-10 text-sm text-[#263238]"
+            placeholder="Minimal 8 karakter"
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword((v) => !v)}
+            aria-label={showPassword ? 'Sembunyikan password' : 'Tampilkan password'}
+            className="absolute inset-y-0 right-0 flex w-10 items-center justify-center text-[#90A4AE]"
+          >
+            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+          </button>
+        </div>
         {state?.errors?.password && (
           <ul className="mt-1 list-inside list-disc text-xs text-[#E53935]">
             {state.errors.password.map((err) => (
@@ -42,14 +54,24 @@ export function ResetPasswordForm() {
         <label htmlFor="confirmPassword" className="mb-1.5 block text-xs font-bold text-[#78909C]">
           Konfirmasi Password
         </label>
-        <input
-          id="confirmPassword"
-          name="confirmPassword"
-          type="password"
-          autoComplete="new-password"
-          className="h-11 w-full rounded-lg border border-[#CFD8DC] px-3 text-sm text-[#263238]"
-          placeholder="Ulangi password baru"
-        />
+        <div className="relative">
+          <input
+            id="confirmPassword"
+            name="confirmPassword"
+            type={showPassword ? 'text' : 'password'}
+            autoComplete="new-password"
+            className="h-11 w-full rounded-lg border border-[#CFD8DC] px-3 pr-10 text-sm text-[#263238]"
+            placeholder="Ulangi password baru"
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword((v) => !v)}
+            aria-label={showPassword ? 'Sembunyikan password' : 'Tampilkan password'}
+            className="absolute inset-y-0 right-0 flex w-10 items-center justify-center text-[#90A4AE]"
+          >
+            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+          </button>
+        </div>
         {state?.errors?.confirmPassword && (
           <p className="mt-1 text-xs text-[#E53935]">{state.errors.confirmPassword[0]}</p>
         )}

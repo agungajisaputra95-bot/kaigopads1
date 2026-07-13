@@ -1,11 +1,13 @@
 'use client'
 
-import { useActionState } from 'react'
+import { useActionState, useState } from 'react'
 import Link from 'next/link'
+import { Eye, EyeOff } from 'lucide-react'
 import { login } from '@/app/(auth)/actions'
 
 export function LoginForm() {
   const [state, formAction, pending] = useActionState(login, undefined)
+  const [showPassword, setShowPassword] = useState(false)
 
   return (
     <form action={formAction} className="flex flex-col gap-4">
@@ -42,14 +44,24 @@ export function LoginForm() {
             Lupa kata sandi?
           </Link>
         </div>
-        <input
-          id="password"
-          name="password"
-          type="password"
-          autoComplete="current-password"
-          className="h-11 w-full rounded-lg border border-[#CFD8DC] px-3 text-sm text-[#263238]"
-          placeholder="••••••••"
-        />
+        <div className="relative">
+          <input
+            id="password"
+            name="password"
+            type={showPassword ? 'text' : 'password'}
+            autoComplete="current-password"
+            className="h-11 w-full rounded-lg border border-[#CFD8DC] px-3 pr-10 text-sm text-[#263238]"
+            placeholder="••••••••"
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword((v) => !v)}
+            aria-label={showPassword ? 'Sembunyikan password' : 'Tampilkan password'}
+            className="absolute inset-y-0 right-0 flex w-10 items-center justify-center text-[#90A4AE]"
+          >
+            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+          </button>
+        </div>
         {state?.errors?.password && <p className="mt-1 text-xs text-[#E53935]">{state.errors.password[0]}</p>}
       </div>
 
