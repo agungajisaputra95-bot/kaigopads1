@@ -35,3 +35,8 @@ export function daysUntil(targetDate: string): number {
   const target = new Date(`${targetDate}T00:00:00+09:00`).getTime()
   return Math.max(0, Math.ceil((target - Date.now()) / 86_400_000))
 }
+
+// Sisa hari (boleh negatif kalau sudah lewat) dari sekarang sampai timestamp ISO, mis. premium_until.
+export function daysUntilIso(iso: string): number {
+  return Math.ceil((new Date(iso).getTime() - Date.now()) / 86_400_000)
+}

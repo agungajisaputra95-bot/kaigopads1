@@ -1,10 +1,14 @@
 import { getUserAdminOverview } from '@/lib/queries/users'
 import { UserManagementClient } from '@/components/admin/UserManagementClient'
+import { daysUntilIso } from '@/lib/utils'
 
 export default async function UsersPage() {
   const users = await getUserAdminOverview()
   const premiumCount = users.filter((u) => u.isPremium).length
   const activeCount = users.filter((u) => u.totalAnswered > 0).length
+  const expiringSoonCount = users.filter(
+    (u) => u.isPremium && u.premiumUntil && daysUntilIso(u.premiumUntil) <= 7
+  ).length
 
   return (
     <>
@@ -25,6 +29,11 @@ export default async function UsersPage() {
           <span className="rounded-full bg-[#FB8C00]/[0.12] px-2.5 py-1 text-xs font-bold text-[#E65100]">
             {premiumCount} premium
           </span>
+          {expiringSoonCount > 0 && (
+            <span className="rounded-full bg-[#E53935]/[0.12] px-2.5 py-1 text-xs font-bold text-[#C62828]">
+              ⚠ {expiringSoonCount} premium habis ≤7 hari
+            </span>
+          )}
         </div>
 
         <UserManagementClient users={users} />

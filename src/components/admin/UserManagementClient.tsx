@@ -2,10 +2,10 @@
 
 import { useMemo, useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
-import { Search } from 'lucide-react'
+import { ArrowDown, ArrowUp, ArrowUpDown, Search } from 'lucide-react'
 import { confirmPayment, revokePremium } from '@/app/admin/users/actions'
 import type { UserAdminRow } from '@/lib/queries/users'
-import { toWaMeNumber } from '@/lib/utils'
+import { daysUntilIso, toWaMeNumber } from '@/lib/utils'
 
 const DURATION_OPTIONS = [
   { months: 1, label: '1 bln' },
@@ -17,6 +17,7 @@ const PREMIUM_FILTERS = [
   { value: 'all', label: 'Semua' },
   { value: 'premium', label: 'Premium' },
   { value: 'free', label: 'Free' },
+  { value: 'expiring', label: 'Habis ≤7 Hari' },
 ] as const
 
 const ACTIVITY_FILTERS = [
@@ -28,9 +29,43 @@ const ACTIVITY_FILTERS = [
 type PremiumFilter = (typeof PREMIUM_FILTERS)[number]['value']
 type ActivityFilter = (typeof ACTIVITY_FILTERS)[number]['value']
 
+type SortKey = 'createdAt' | 'totalAnswered' | 'accuracyPct' | 'examAttemptsCount' | 'lastActiveAt'
+type Sort = { key: SortKey; dir: 'asc' | 'desc' }
+
 function formatDate(iso: string | null) {
   if (!iso) return '-'
   return new Date(iso).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })
+}
+
+function daysLeft(iso: string | null): number | null {
+  return iso ? daysUntilIso(iso) : null
+}
+
+function SortableHeader({
+  label,
+  active,
+  dir,
+  onClick,
+  align = 'left',
+}: {
+  label: string
+  active: boolean
+  dir: 'asc' | 'desc'
+  onClick: () => void
+  align?: 'left' | 'right'
+}) {
+  const Icon = active ? (dir === 'asc' ? ArrowUp : ArrowDown) : ArrowUpDown
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="flex items-center gap-1"
+      style={{ justifyContent: align === 'right' ? 'flex-end' : 'flex-start', color: active ? '#1565C0' : undefined }}
+    >
+      <span>{label}</span>
+      <Icon size={11} />
+    </button>
+  )
 }
 
 function FilterChips<T extends string>({
@@ -69,12 +104,21 @@ export function UserManagementClient({ users }: { users: UserAdminRow[] }) {
   const [query, setQuery] = useState('')
   const [premiumFilter, setPremiumFilter] = useState<PremiumFilter>('all')
   const [activityFilter, setActivityFilter] = useState<ActivityFilter>('all')
+  const [sort, setSort] = useState<Sort | null>(null)
+
+  function handleSort(key: SortKey) {
+    setSort((prev) => (prev?.key === key ? { key, dir: prev.dir === 'asc' ? 'desc' : 'asc' } : { key, dir: 'desc' }))
+  }
 
   const filteredUsers = useMemo(() => {
     const q = query.trim().toLowerCase()
-    return users.filter((u) => {
+    const filtered = users.filter((u) => {
       if (premiumFilter === 'premium' && !u.isPremium) return false
       if (premiumFilter === 'free' && u.isPremium) return false
+      if (premiumFilter === 'expiring') {
+        const left = daysLeft(u.premiumUntil)
+        if (!u.isPremium || left === null || left > 7) return false
+      }
       if (activityFilter === 'active' && u.totalAnswered === 0) return false
       if (activityFilter === 'inactive' && u.totalAnswered > 0) return false
       if (!q) return true
@@ -84,7 +128,21 @@ export function UserManagementClient({ users }: { users: UserAdminRow[] }) {
         (u.whatsapp ?? '').toLowerCase().includes(q)
       )
     })
-  }, [users, query, premiumFilter, activityFilter])
+
+    if (!sort) return filtered
+
+    return [...filtered].sort((a, b) => {
+      const av = a[sort.key]
+      const bv = b[sort.key]
+      if (av === null && bv === null) return 0
+      if (av === null) return 1
+      if (bv === null) return -1
+      if (typeof av === 'string' && typeof bv === 'string') {
+        return sort.dir === 'asc' ? av.localeCompare(bv) : bv.localeCompare(av)
+      }
+      return sort.dir === 'asc' ? (av as number) - (bv as number) : (bv as number) - (av as number)
+    })
+  }, [users, query, premiumFilter, activityFilter, sort])
 
   function handleConfirm(userId: string, months: number) {
     setPendingUserId(userId)
@@ -125,11 +183,39 @@ export function UserManagementClient({ users }: { users: UserAdminRow[] }) {
       <div className="overflow-x-auto rounded-xl bg-white shadow-[0_1px_3px_rgba(55,71,79,0.08)]">
         <div className="grid min-w-[980px] grid-cols-[1.6fr_auto_auto_auto_auto_auto_auto_auto] gap-4 border-b border-[#ECEFF1] px-5 py-2.5 text-[11px] font-bold uppercase tracking-wide text-[#90A4AE]">
           <span>User</span>
-          <span>Terdaftar</span>
-          <span className="text-right">Soal</span>
-          <span className="text-right">Akurasi</span>
-          <span className="text-right">Mock Exam</span>
-          <span>Terakhir Aktif</span>
+          <SortableHeader
+            label="Terdaftar"
+            active={sort?.key === 'createdAt'}
+            dir={sort?.key === 'createdAt' ? sort.dir : 'desc'}
+            onClick={() => handleSort('createdAt')}
+          />
+          <SortableHeader
+            label="Soal"
+            align="right"
+            active={sort?.key === 'totalAnswered'}
+            dir={sort?.key === 'totalAnswered' ? sort.dir : 'desc'}
+            onClick={() => handleSort('totalAnswered')}
+          />
+          <SortableHeader
+            label="Akurasi"
+            align="right"
+            active={sort?.key === 'accuracyPct'}
+            dir={sort?.key === 'accuracyPct' ? sort.dir : 'desc'}
+            onClick={() => handleSort('accuracyPct')}
+          />
+          <SortableHeader
+            label="Mock Exam"
+            align="right"
+            active={sort?.key === 'examAttemptsCount'}
+            dir={sort?.key === 'examAttemptsCount' ? sort.dir : 'desc'}
+            onClick={() => handleSort('examAttemptsCount')}
+          />
+          <SortableHeader
+            label="Terakhir Aktif"
+            active={sort?.key === 'lastActiveAt'}
+            dir={sort?.key === 'lastActiveAt' ? sort.dir : 'desc'}
+            onClick={() => handleSort('lastActiveAt')}
+          />
           <span>Status</span>
           <span>Aksi</span>
         </div>
@@ -138,6 +224,8 @@ export function UserManagementClient({ users }: { users: UserAdminRow[] }) {
         )}
         {filteredUsers.map((u) => {
         const rowPending = isPending && pendingUserId === u.id
+        const premiumDaysLeft = u.isPremium ? daysLeft(u.premiumUntil) : null
+        const expiringSoon = premiumDaysLeft !== null && premiumDaysLeft <= 7
         return (
           <div
             key={u.id}
@@ -166,8 +254,16 @@ export function UserManagementClient({ users }: { users: UserAdminRow[] }) {
             <span className="whitespace-nowrap text-xs text-[#90A4AE]">{formatDate(u.lastActiveAt)}</span>
             <div className="whitespace-nowrap">
               {u.isPremium ? (
-                <span className="rounded-full bg-[#FB8C00]/[0.12] px-2.5 py-1 text-[11px] font-bold text-[#E65100]">
-                  Premium · s/d {formatDate(u.premiumUntil)}
+                <span
+                  className="rounded-full px-2.5 py-1 text-[11px] font-bold"
+                  style={{
+                    background: expiringSoon ? 'rgba(229,57,53,0.12)' : 'rgba(251,140,0,0.12)',
+                    color: expiringSoon ? '#C62828' : '#E65100',
+                  }}
+                >
+                  {expiringSoon
+                    ? `⚠ Habis ${premiumDaysLeft! <= 0 ? 'hari ini' : `${premiumDaysLeft} hari lagi`}`
+                    : `Premium · s/d ${formatDate(u.premiumUntil)}`}
                 </span>
               ) : (
                 <span className="rounded-full bg-[#ECEFF1] px-2.5 py-1 text-[11px] font-bold text-[#78909C]">
