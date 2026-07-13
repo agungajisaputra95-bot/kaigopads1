@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import { Bell, LogOut } from 'lucide-react'
 import { useFurigana } from '@/components/ui/FuriganaText'
 import { subscribePush, unsubscribePush } from '@/app/(main)/profile/actions'
@@ -102,6 +103,10 @@ export function SettingsList({
         <LogOut size={16} />
         Keluar
       </button>
+
+      <Link href="/profile/delete-account" className="text-center text-xs font-semibold text-[#B0BEC5]">
+        Hapus Akun
+      </Link>
     </div>
   )
 }

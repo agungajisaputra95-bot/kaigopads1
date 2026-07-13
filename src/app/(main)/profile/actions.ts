@@ -1,7 +1,9 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
+import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import {
   EditProfileSchema,
   ChangePasswordSchema,
@@ -71,6 +73,45 @@ export async function changePassword(
   if (error) return { message: error.message }
 
   return { success: true, message: 'Password berhasil diganti.' }
+}
+
+export interface DeleteAccountFormState {
+  errors?: { password?: string[]; confirmText?: string[] }
+  message?: string
+}
+
+export async function deleteAccount(
+  _state: DeleteAccountFormState | undefined,
+  formData: FormData
+): Promise<DeleteAccountFormState> {
+  const password = formData.get('password')
+  const confirmText = formData.get('confirmText')
+
+  if (typeof password !== 'string' || password.length === 0) {
+    return { errors: { password: ['Password wajib diisi.'] } }
+  }
+  if (confirmText !== 'HAPUS') {
+    return { errors: { confirmText: ['Ketik "HAPUS" (huruf besar) untuk konfirmasi.'] } }
+  }
+
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user?.email) return { message: 'Sesi kamu berakhir, silakan login ulang.' }
+
+  const { error: verifyError } = await supabase.auth.signInWithPassword({ email: user.email, password })
+  if (verifyError) {
+    return { errors: { password: ['Password salah.'] } }
+  }
+
+  const admin = createAdminClient()
+  const { error: deleteError } = await admin.auth.admin.deleteUser(user.id)
+  if (deleteError) return { message: 'Gagal menghapus akun. Coba lagi ya.' }
+
+  await supabase.auth.signOut()
+  redirect('/login')
 }
 
 export interface PushSubscriptionPayload {

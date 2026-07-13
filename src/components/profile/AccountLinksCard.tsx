@@ -1,10 +1,11 @@
 import Link from 'next/link'
-import { ChevronRight, History, KeyRound, UserPen } from 'lucide-react'
+import { ChevronRight, CircleHelp, History, KeyRound, UserPen } from 'lucide-react'
 
 const LINKS = [
   { href: '/profile/edit', label: 'Edit Profil', description: 'Ubah nama dan nomor WhatsApp', icon: UserPen },
   { href: '/profile/change-password', label: 'Ganti Password', description: 'Perbarui password akun kamu', icon: KeyRound },
   { href: '/profile/payment-history', label: 'Riwayat Pembayaran', description: 'Histori konfirmasi Premium kamu', icon: History },
+  { href: '/profile/help', label: 'Bantuan & FAQ', description: 'Pertanyaan umum & hubungi CS', icon: CircleHelp },
 ]
 
 export function AccountLinksCard() {
