@@ -2,15 +2,14 @@
 
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
-import { LayoutGrid, PenLine, Upload, ListTree, Users, JapaneseYen, MessageSquareText } from 'lucide-react'
+import { LayoutGrid, PenLine, Upload, ListTree, Users, MessageSquareText } from 'lucide-react'
 
 const MENU = [
   { href: '/admin', label: 'Dashboard', icon: LayoutGrid },
   { href: '/admin/questions', label: 'Question Editor', icon: PenLine },
   { href: '/admin/import', label: 'Bulk Import', icon: Upload },
   { href: '/admin/kamoku', label: 'Manajemen Kamoku', icon: ListTree },
-  { href: '/admin/users', label: 'User Analytics', icon: Users },
-  { href: '/admin/users/payment', label: 'Payment Tracking', icon: JapaneseYen },
+  { href: '/admin/users', label: 'Users & Pembayaran', icon: Users },
   { href: '/admin/feedback', label: 'Kritik & Saran', icon: MessageSquareText },
 ]
 

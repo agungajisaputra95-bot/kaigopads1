@@ -2,8 +2,8 @@
 
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
-import { confirmPayment, revokePremium } from '@/app/admin/users/payment/actions'
-import type { UserPaymentRow } from '@/lib/queries/payments'
+import { confirmPayment, revokePremium } from '@/app/admin/users/actions'
+import type { UserAdminRow } from '@/lib/queries/users'
 import { toWaMeNumber } from '@/lib/utils'
 
 const DURATION_OPTIONS = [
@@ -17,7 +17,7 @@ function formatDate(iso: string | null) {
   return new Date(iso).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })
 }
 
-export function PaymentTrackingClient({ users }: { users: UserPaymentRow[] }) {
+export function UserManagementClient({ users }: { users: UserAdminRow[] }) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
   const [pendingUserId, setPendingUserId] = useState<string | null>(null)
@@ -41,10 +41,14 @@ export function PaymentTrackingClient({ users }: { users: UserPaymentRow[] }) {
   }
 
   return (
-    <div className="overflow-hidden rounded-xl bg-white shadow-[0_1px_3px_rgba(55,71,79,0.08)]">
-      <div className="grid grid-cols-[1fr_auto_auto_auto] gap-4 border-b border-[#ECEFF1] px-5 py-2.5 text-[11px] font-bold uppercase tracking-wide text-[#90A4AE]">
+    <div className="overflow-x-auto rounded-xl bg-white shadow-[0_1px_3px_rgba(55,71,79,0.08)]">
+      <div className="grid min-w-[980px] grid-cols-[1.6fr_auto_auto_auto_auto_auto_auto_auto] gap-4 border-b border-[#ECEFF1] px-5 py-2.5 text-[11px] font-bold uppercase tracking-wide text-[#90A4AE]">
         <span>User</span>
         <span>Terdaftar</span>
+        <span className="text-right">Soal</span>
+        <span className="text-right">Akurasi</span>
+        <span className="text-right">Mock Exam</span>
+        <span>Terakhir Aktif</span>
         <span>Status</span>
         <span>Aksi</span>
       </div>
@@ -54,7 +58,7 @@ export function PaymentTrackingClient({ users }: { users: UserPaymentRow[] }) {
         return (
           <div
             key={u.id}
-            className="grid grid-cols-[1fr_auto_auto_auto] items-center gap-4 border-t border-[#ECEFF1] px-5 py-3"
+            className="grid min-w-[980px] grid-cols-[1.6fr_auto_auto_auto_auto_auto_auto_auto] items-center gap-4 border-t border-[#ECEFF1] px-5 py-3"
           >
             <div className="min-w-0">
               <div className="truncate text-sm font-bold text-[#263238]">{u.name ?? u.email}</div>
@@ -71,6 +75,12 @@ export function PaymentTrackingClient({ users }: { users: UserPaymentRow[] }) {
               )}
             </div>
             <span className="whitespace-nowrap text-xs text-[#90A4AE]">{formatDate(u.createdAt)}</span>
+            <span className="text-right font-mono text-sm text-[#37474F]">{u.totalAnswered}</span>
+            <span className="text-right font-mono text-sm text-[#37474F]">
+              {u.accuracyPct !== null ? `${u.accuracyPct}%` : '-'}
+            </span>
+            <span className="text-right font-mono text-sm text-[#37474F]">{u.examAttemptsCount}</span>
+            <span className="whitespace-nowrap text-xs text-[#90A4AE]">{formatDate(u.lastActiveAt)}</span>
             <div className="whitespace-nowrap">
               {u.isPremium ? (
                 <span className="rounded-full bg-[#FB8C00]/[0.12] px-2.5 py-1 text-[11px] font-bold text-[#E65100]">

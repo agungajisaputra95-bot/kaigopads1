@@ -1,11 +1,14 @@
 import { createAdminClient } from '@/lib/supabase/admin'
 
-export interface UserAnalyticsRow {
+export interface UserAdminRow {
   id: string
   email: string
   name: string | null
+  whatsapp: string | null
   createdAt: string
   isPremium: boolean
+  premiumUntil: string | null
+  paymentConfirmedAt: string | null
   totalAnswered: number
   correctCount: number
   accuracyPct: number | null
@@ -13,19 +16,20 @@ export interface UserAnalyticsRow {
   lastActiveAt: string | null
 }
 
-export async function getUserAnalytics(): Promise<UserAnalyticsRow[]> {
+// Gabungan User Analytics + Payment Tracking: satu query untuk halaman /admin/users.
+export async function getUserAdminOverview(): Promise<UserAdminRow[]> {
   const supabase = createAdminClient()
 
   const [usersRes, premiumRes, progressRes, examRes] = await Promise.all([
     supabase.auth.admin.listUsers({ page: 1, perPage: 200 }),
-    supabase.from('user_premium').select('user_id, is_premium'),
+    supabase.from('user_premium').select('*'),
     supabase.from('user_progress').select('user_id, is_correct, answered_at'),
     supabase.from('exam_attempts').select('user_id'),
   ])
 
   if (usersRes.error) return []
 
-  const premiumByUser = new Map((premiumRes.data ?? []).map((r) => [r.user_id, r.is_premium]))
+  const premiumByUser = new Map((premiumRes.data ?? []).map((r) => [r.user_id, r]))
 
   const progressByUser = new Map<string, { total: number; correct: number; lastActive: string | null }>()
   for (const row of progressRes.data ?? []) {
@@ -43,13 +47,17 @@ export async function getUserAnalytics(): Promise<UserAnalyticsRow[]> {
 
   return usersRes.data.users
     .map((u) => {
+      const premium = premiumByUser.get(u.id)
       const progress = progressByUser.get(u.id)
       return {
         id: u.id,
         email: u.email ?? '(tanpa email)',
         name: (u.user_metadata?.full_name as string | undefined) ?? null,
+        whatsapp: (u.user_metadata?.whatsapp as string | undefined) ?? null,
         createdAt: u.created_at,
-        isPremium: premiumByUser.get(u.id) ?? false,
+        isPremium: premium?.is_premium ?? false,
+        premiumUntil: premium?.premium_until ?? null,
+        paymentConfirmedAt: premium?.payment_confirmed_at ?? null,
         totalAnswered: progress?.total ?? 0,
         correctCount: progress?.correct ?? 0,
         accuracyPct: progress && progress.total > 0 ? Math.round((progress.correct / progress.total) * 100) : null,
