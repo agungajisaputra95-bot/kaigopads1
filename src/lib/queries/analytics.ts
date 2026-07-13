@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { getUserProgressRows } from '@/lib/queries/dashboard'
 
 export interface ScoreHistoryPoint {
   date: string
@@ -37,10 +38,9 @@ export interface StudyTimeAnalytics {
 const DAY_LABELS = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab']
 
 export async function getStudyTimeAnalytics(userId: string): Promise<StudyTimeAnalytics> {
-  const supabase = await createClient()
-  const { data } = await supabase.from('user_progress').select('answered_at, is_correct').eq('user_id', userId)
+  const rows = await getUserProgressRows(userId)
 
-  if (!data || data.length === 0) {
+  if (rows.length === 0) {
     return { totalQuestionsAnswered: 0, avgPerDay: 0, weekBars: [], bestHourInsight: null }
   }
 
@@ -54,15 +54,15 @@ export async function getStudyTimeAnalytics(userId: string): Promise<StudyTimeAn
   const countsByDate = new Map<string, number>()
   const hourStats = new Map<number, { correct: number; total: number }>()
 
-  for (const row of data) {
-    const d = new Date(row.answered_at as string)
+  for (const row of rows) {
+    const d = new Date(row.answeredAt)
     const dateKey = d.toISOString().slice(0, 10)
     countsByDate.set(dateKey, (countsByDate.get(dateKey) ?? 0) + 1)
 
     const hour = d.getHours()
     const stat = hourStats.get(hour) ?? { correct: 0, total: 0 }
     stat.total += 1
-    if (row.is_correct) stat.correct += 1
+    if (row.isCorrect) stat.correct += 1
     hourStats.set(hour, stat)
   }
 
@@ -72,7 +72,7 @@ export async function getStudyTimeAnalytics(userId: string): Promise<StudyTimeAn
   }))
 
   const activeDays = countsByDate.size
-  const avgPerDay = activeDays > 0 ? Math.round(data.length / activeDays) : 0
+  const avgPerDay = activeDays > 0 ? Math.round(rows.length / activeDays) : 0
 
   // Butuh minimal beberapa jawaban di jam yang sama supaya insight cukup representatif.
   const MIN_SAMPLES_FOR_INSIGHT = 3
@@ -94,5 +94,5 @@ export async function getStudyTimeAnalytics(userId: string): Promise<StudyTimeAn
         ).padStart(2, '0')}:00 — akurasi jawaban ${Math.round(bestAccuracy * 100)}%. Jadwalkan sesi sulit di jam ini.`
       : null
 
-  return { totalQuestionsAnswered: data.length, avgPerDay, weekBars, bestHourInsight }
+  return { totalQuestionsAnswered: rows.length, avgPerDay, weekBars, bestHourInsight }
 }
