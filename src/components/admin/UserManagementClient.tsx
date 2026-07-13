@@ -2,7 +2,7 @@
 
 import { useMemo, useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
-import { ArrowDown, ArrowUp, ArrowUpDown, Search } from 'lucide-react'
+import { ArrowDown, ArrowUp, ArrowUpDown, ChevronLeft, ChevronRight, Search } from 'lucide-react'
 import { confirmPayment, revokePremium } from '@/app/admin/users/actions'
 import type { UserAdminRow } from '@/lib/queries/users'
 import { daysUntilIso, toWaMeNumber } from '@/lib/utils'
@@ -31,6 +31,8 @@ type ActivityFilter = (typeof ACTIVITY_FILTERS)[number]['value']
 
 type SortKey = 'createdAt' | 'totalAnswered' | 'accuracyPct' | 'examAttemptsCount' | 'lastActiveAt'
 type Sort = { key: SortKey; dir: 'asc' | 'desc' }
+
+const PAGE_SIZE = 25
 
 function formatDate(iso: string | null) {
   if (!iso) return '-'
@@ -105,9 +107,26 @@ export function UserManagementClient({ users }: { users: UserAdminRow[] }) {
   const [premiumFilter, setPremiumFilter] = useState<PremiumFilter>('all')
   const [activityFilter, setActivityFilter] = useState<ActivityFilter>('all')
   const [sort, setSort] = useState<Sort | null>(null)
+  const [page, setPage] = useState(1)
+
+  function updateQuery(v: string) {
+    setQuery(v)
+    setPage(1)
+  }
+
+  function updatePremiumFilter(v: PremiumFilter) {
+    setPremiumFilter(v)
+    setPage(1)
+  }
+
+  function updateActivityFilter(v: ActivityFilter) {
+    setActivityFilter(v)
+    setPage(1)
+  }
 
   function handleSort(key: SortKey) {
     setSort((prev) => (prev?.key === key ? { key, dir: prev.dir === 'asc' ? 'desc' : 'asc' } : { key, dir: 'desc' }))
+    setPage(1)
   }
 
   const filteredUsers = useMemo(() => {
@@ -144,6 +163,10 @@ export function UserManagementClient({ users }: { users: UserAdminRow[] }) {
     })
   }, [users, query, premiumFilter, activityFilter, sort])
 
+  const totalPages = Math.max(1, Math.ceil(filteredUsers.length / PAGE_SIZE))
+  const safePage = Math.min(page, totalPages)
+  const pagedUsers = filteredUsers.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE)
+
   function handleConfirm(userId: string, months: number) {
     setPendingUserId(userId)
     startTransition(async () => {
@@ -170,13 +193,13 @@ export function UserManagementClient({ users }: { users: UserAdminRow[] }) {
           <input
             type="text"
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => updateQuery(e.target.value)}
             placeholder="Cari nama, email, atau WhatsApp…"
             className="h-9 w-64 rounded-lg border border-[#CFD8DC] bg-white pl-8 pr-3 text-xs text-[#263238] placeholder:text-[#B0BEC5]"
           />
         </div>
-        <FilterChips options={PREMIUM_FILTERS} value={premiumFilter} onChange={setPremiumFilter} />
-        <FilterChips options={ACTIVITY_FILTERS} value={activityFilter} onChange={setActivityFilter} />
+        <FilterChips options={PREMIUM_FILTERS} value={premiumFilter} onChange={updatePremiumFilter} />
+        <FilterChips options={ACTIVITY_FILTERS} value={activityFilter} onChange={updateActivityFilter} />
         <span className="ml-auto text-xs font-semibold text-[#90A4AE]">{filteredUsers.length} ditemukan</span>
       </div>
 
@@ -222,7 +245,7 @@ export function UserManagementClient({ users }: { users: UserAdminRow[] }) {
         {filteredUsers.length === 0 && (
           <div className="p-6 text-center text-sm text-[#90A4AE]">Tidak ada user yang cocok.</div>
         )}
-        {filteredUsers.map((u) => {
+        {pagedUsers.map((u) => {
         const rowPending = isPending && pendingUserId === u.id
         const premiumDaysLeft = u.isPremium ? daysLeft(u.premiumUntil) : null
         const expiringSoon = premiumDaysLeft !== null && premiumDaysLeft <= 7
@@ -299,6 +322,30 @@ export function UserManagementClient({ users }: { users: UserAdminRow[] }) {
         )
       })}
       </div>
+
+      {totalPages > 1 && (
+        <div className="flex items-center justify-end gap-3 text-xs text-[#78909C]">
+          <button
+            type="button"
+            disabled={safePage <= 1}
+            onClick={() => setPage(safePage - 1)}
+            className="flex h-8 w-8 items-center justify-center rounded-lg border border-[#CFD8DC] disabled:opacity-40"
+          >
+            <ChevronLeft size={14} />
+          </button>
+          <span>
+            Halaman {safePage} dari {totalPages}
+          </span>
+          <button
+            type="button"
+            disabled={safePage >= totalPages}
+            onClick={() => setPage(safePage + 1)}
+            className="flex h-8 w-8 items-center justify-center rounded-lg border border-[#CFD8DC] disabled:opacity-40"
+          >
+            <ChevronRight size={14} />
+          </button>
+        </div>
+      )}
     </div>
   )
 }

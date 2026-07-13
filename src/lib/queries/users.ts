@@ -16,12 +16,26 @@ export interface UserAdminRow {
   lastActiveAt: string | null
 }
 
+// auth.admin.listUsers() dibatasi max 1000/page dan tidak mengembalikan total count,
+// jadi ambil per halaman sampai hasilnya lebih pendek dari perPage (berarti halaman terakhir).
+export async function listAllUsers(supabase: ReturnType<typeof createAdminClient>) {
+  const perPage = 1000
+  const users = []
+  for (let page = 1; ; page++) {
+    const { data, error } = await supabase.auth.admin.listUsers({ page, perPage })
+    if (error) return { users, error }
+    users.push(...data.users)
+    if (data.users.length < perPage) break
+  }
+  return { users, error: null }
+}
+
 // Gabungan User Analytics + Payment Tracking: satu query untuk halaman /admin/users.
 export async function getUserAdminOverview(): Promise<UserAdminRow[]> {
   const supabase = createAdminClient()
 
   const [usersRes, premiumRes, progressRes, examRes] = await Promise.all([
-    supabase.auth.admin.listUsers({ page: 1, perPage: 200 }),
+    listAllUsers(supabase),
     supabase.from('user_premium').select('*'),
     supabase.from('user_progress').select('user_id, is_correct, answered_at'),
     supabase.from('exam_attempts').select('user_id'),
@@ -45,7 +59,7 @@ export async function getUserAdminOverview(): Promise<UserAdminRow[]> {
     examCountByUser.set(row.user_id, (examCountByUser.get(row.user_id) ?? 0) + 1)
   }
 
-  return usersRes.data.users
+  return usersRes.users
     .map((u) => {
       const premium = premiumByUser.get(u.id)
       const progress = progressByUser.get(u.id)

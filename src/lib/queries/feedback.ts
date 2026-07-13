@@ -1,4 +1,5 @@
 import { createAdminClient } from '@/lib/supabase/admin'
+import { listAllUsers } from '@/lib/queries/users'
 
 export interface FeedbackRow {
   id: string
@@ -13,12 +14,12 @@ export async function getAllFeedback(): Promise<FeedbackRow[]> {
 
   const [feedbackRes, usersRes] = await Promise.all([
     supabase.from('feedback').select('id, user_id, message, created_at').order('created_at', { ascending: false }),
-    supabase.auth.admin.listUsers({ page: 1, perPage: 200 }),
+    listAllUsers(supabase),
   ])
 
   if (feedbackRes.error || !feedbackRes.data) return []
 
-  const userById = new Map(usersRes.data?.users.map((u) => [u.id, u]) ?? [])
+  const userById = new Map(usersRes.users.map((u) => [u.id, u]))
 
   return feedbackRes.data.map((row) => {
     const user = userById.get(row.user_id)
