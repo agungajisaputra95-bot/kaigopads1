@@ -13,7 +13,9 @@ export function LoginForm() {
     <form action={formAction} className="flex flex-col gap-4">
       <div>
         <h1 className="text-xl font-extrabold text-[#263238]">Masuk</h1>
-        <p className="mt-1 text-sm text-[#78909C]">Lanjutkan belajar persiapan Kaigo Fukushi Shi kamu.</p>
+        <p className="mt-1 text-sm text-[#78909C]">
+          Selangkah lebih dekat menuju gelar Kaigofukushishi. Yuk lanjutkan belajarmu!
+        </p>
       </div>
 
       {state?.message && (

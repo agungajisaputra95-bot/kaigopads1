@@ -20,7 +20,9 @@ export function FeedbackCard() {
         <MessageSquareText size={18} className="text-[#1565C0]" />
         <span className="text-[15px] font-bold text-[#263238]">Kritik & Saran</span>
       </div>
-      <div className="mt-1 text-xs text-[#78909C]">Ada masukan buat KaigoPads? Tulis di sini, langsung sampai ke tim kami.</div>
+      <div className="mt-1 text-xs text-[#78909C]">
+        Masukan kritik & saran agar aplikasi ini nyaman untuk belajar, dapatkan bonus 1 bulan premium gratis!
+      </div>
 
       <form ref={formRef} action={formAction} className="mt-3 flex flex-col gap-2">
         <textarea
