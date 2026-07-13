@@ -18,9 +18,18 @@ interface ProfileClientProps {
   premiumUntil?: string
   isAdmin: boolean
   paywallKamoku: { nameJp: string; furiganaMap: FuriganaMapEntry[] } | null
+  pushEnabled: boolean
 }
 
-export function ProfileClient({ name, email, isPremium, premiumUntil, isAdmin, paywallKamoku }: ProfileClientProps) {
+export function ProfileClient({
+  name,
+  email,
+  isPremium,
+  premiumUntil,
+  isAdmin,
+  paywallKamoku,
+  pushEnabled,
+}: ProfileClientProps) {
   const router = useRouter()
 
   async function handleLogout() {
@@ -59,7 +68,7 @@ export function ProfileClient({ name, email, isPremium, premiumUntil, isAdmin, p
         </Link>
       )}
 
-      <SettingsList onLogout={handleLogout} />
+      <SettingsList onLogout={handleLogout} initialPushEnabled={pushEnabled} />
 
       <FeedbackCard />
     </div>

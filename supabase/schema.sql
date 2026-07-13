@@ -189,3 +189,18 @@ alter table feedback enable row level security;
 
 create policy "User kirim & lihat feedback miliknya sendiri" on feedback
   for all to authenticated using (auth.uid() = user_id) with check (auth.uid() = user_id);
+
+-- Web push subscription per device, dipakai untuk pengingat belajar harian ("Pengingat Belajar" di Profil).
+create table push_subscriptions (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references auth.users(id) not null,
+  endpoint text not null unique,
+  p256dh text not null,
+  auth text not null,
+  created_at timestamptz default now()
+);
+
+alter table push_subscriptions enable row level security;
+
+create policy "User kelola push_subscriptions miliknya sendiri" on push_subscriptions
+  for all to authenticated using (auth.uid() = user_id) with check (auth.uid() = user_id);

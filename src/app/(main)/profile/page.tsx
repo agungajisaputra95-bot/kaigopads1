@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 import { ProfileClient } from '@/components/profile/ProfileClient'
 import { getCachedUser } from '@/lib/supabase/server'
-import { getUserPremiumStatus } from '@/lib/queries/profile'
+import { getUserPremiumStatus, hasActivePushSubscription } from '@/lib/queries/profile'
 import { KAMOKU_LIST } from '@/lib/constants'
 
 interface ProfilePageProps {
@@ -14,7 +14,10 @@ export default async function ProfilePage({ searchParams }: ProfilePageProps) {
 
   if (!user) redirect('/login')
 
-  const premium = await getUserPremiumStatus(user.id)
+  const [premium, pushEnabled] = await Promise.all([
+    getUserPremiumStatus(user.id),
+    hasActivePushSubscription(user.id),
+  ])
   const name = (user.user_metadata?.full_name as string | undefined) ?? user.email?.split('@')[0] ?? 'Pengguna'
   const email = user.email ?? '-'
   const premiumUntil = premium.premiumUntil
@@ -31,6 +34,7 @@ export default async function ProfilePage({ searchParams }: ProfilePageProps) {
       premiumUntil={premiumUntil}
       isAdmin={premium.isAdmin}
       paywallKamoku={kamoku ? { nameJp: kamoku.nameJp, furiganaMap: [] } : null}
+      pushEnabled={pushEnabled}
     />
   )
 }

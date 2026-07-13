@@ -1,8 +1,10 @@
 'use client'
 
 import { useState } from 'react'
-import { Bell, Languages, LogOut } from 'lucide-react'
+import { Bell, LogOut } from 'lucide-react'
 import { useFurigana } from '@/components/ui/FuriganaText'
+import { subscribePush, unsubscribePush } from '@/app/(main)/profile/actions'
+import { enablePushNotifications, disablePushNotifications } from '@/lib/push'
 
 function ToggleSwitch({ checked }: { checked: boolean }) {
   return (
@@ -18,9 +20,46 @@ function ToggleSwitch({ checked }: { checked: boolean }) {
   )
 }
 
-export function SettingsList({ onLogout }: { onLogout: () => void }) {
+export function SettingsList({
+  onLogout,
+  initialPushEnabled,
+}: {
+  onLogout: () => void
+  initialPushEnabled: boolean
+}) {
   const { showFurigana, toggle } = useFurigana()
-  const [reminderOn, setReminderOn] = useState(true)
+  const [reminderOn, setReminderOn] = useState(initialPushEnabled)
+  const [pushBusy, setPushBusy] = useState(false)
+  const [pushError, setPushError] = useState<string | null>(null)
+
+  async function handleReminderToggle() {
+    if (pushBusy) return
+    setPushError(null)
+    setPushBusy(true)
+    try {
+      if (reminderOn) {
+        const endpoint = await disablePushNotifications()
+        if (endpoint) await unsubscribePush(endpoint)
+        setReminderOn(false)
+      } else {
+        const subscription = await enablePushNotifications()
+        const json = subscription.toJSON()
+        if (!json.endpoint || !json.keys?.p256dh || !json.keys?.auth) {
+          throw new Error('Data subscription tidak lengkap.')
+        }
+        const result = await subscribePush({
+          endpoint: json.endpoint,
+          keys: { p256dh: json.keys.p256dh, auth: json.keys.auth },
+        })
+        if ('error' in result) throw new Error(result.error)
+        setReminderOn(true)
+      }
+    } catch (err) {
+      setPushError(err instanceof Error ? err.message : 'Gagal mengubah pengaturan notifikasi.')
+    } finally {
+      setPushBusy(false)
+    }
+  }
 
   return (
     <div className="flex flex-col gap-2.5">
@@ -40,24 +79,19 @@ export function SettingsList({ onLogout }: { onLogout: () => void }) {
 
         <button
           type="button"
-          onClick={() => setReminderOn((v) => !v)}
-          className="flex w-full items-center gap-3 border-t border-[#ECEFF1] p-4"
+          onClick={handleReminderToggle}
+          disabled={pushBusy}
+          className="flex w-full items-center gap-3 border-t border-[#ECEFF1] p-4 disabled:opacity-60"
         >
           <Bell size={18} className="text-[#546E7A]" />
           <div className="flex-1 text-left">
             <div className="text-[13px] font-bold text-[#263238]">Pengingat Belajar</div>
-            <div className="mt-0.5 text-xs text-[#90A4AE]">Notifikasi harian supaya konsisten belajar</div>
+            <div className="mt-0.5 text-xs text-[#90A4AE]">
+              {pushError ?? 'Notifikasi harian supaya konsisten belajar'}
+            </div>
           </div>
           <ToggleSwitch checked={reminderOn} />
         </button>
-
-        <div className="flex w-full items-center gap-3 border-t border-[#ECEFF1] p-4">
-          <Languages size={18} className="text-[#546E7A]" />
-          <div className="flex-1 text-left">
-            <div className="text-[13px] font-bold text-[#263238]">Bahasa</div>
-            <div className="mt-0.5 text-xs text-[#90A4AE]">Bahasa Indonesia</div>
-          </div>
-        </div>
       </div>
 
       <button
