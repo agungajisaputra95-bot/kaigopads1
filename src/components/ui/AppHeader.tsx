@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { FuriganaPill } from '@/components/ui/FuriganaPill'
 
 export function AppHeader({ userInitial = 'R' }: { userInitial?: string }) {
@@ -11,9 +12,12 @@ export function AppHeader({ userInitial = 'R' }: { userInitial?: string }) {
       </div>
       <div className="flex items-center gap-2.5">
         <FuriganaPill />
-        <div className="flex h-[34px] w-[34px] items-center justify-center rounded-full border-2 border-white bg-[#CFD8DC] text-sm font-bold text-[#455A64] shadow-[0_1px_3px_rgba(55,71,79,0.15)]">
+        <Link
+          href="/profile"
+          className="flex h-[34px] w-[34px] items-center justify-center rounded-full border-2 border-white bg-[#CFD8DC] text-sm font-bold text-[#455A64] shadow-[0_1px_3px_rgba(55,71,79,0.15)]"
+        >
           {userInitial}
-        </div>
+        </Link>
       </div>
     </div>
   )
