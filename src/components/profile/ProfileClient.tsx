@@ -5,11 +5,13 @@ import Link from 'next/link'
 import { ShieldCheck } from 'lucide-react'
 import { ProfileHeader } from '@/components/profile/ProfileHeader'
 import { MembershipCard } from '@/components/profile/MembershipCard'
+import { AchievementsSummaryCard } from '@/components/profile/AchievementsSummaryCard'
 import { AccountLinksCard } from '@/components/profile/AccountLinksCard'
 import { SettingsList } from '@/components/profile/SettingsList'
 import { FeedbackCard } from '@/components/profile/FeedbackCard'
 import { createClient } from '@/lib/supabase/client'
 import { buildWhatsappUpgradeLink } from '@/lib/constants'
+import type { AchievementStats } from '@/lib/achievements'
 import type { FuriganaMapEntry } from '@/types/question'
 
 interface ProfileClientProps {
@@ -20,6 +22,7 @@ interface ProfileClientProps {
   isAdmin: boolean
   paywallKamoku: { nameJp: string; furiganaMap: FuriganaMapEntry[] } | null
   pushEnabled: boolean
+  achievementStats: AchievementStats
 }
 
 export function ProfileClient({
@@ -30,6 +33,7 @@ export function ProfileClient({
   isAdmin,
   paywallKamoku,
   pushEnabled,
+  achievementStats,
 }: ProfileClientProps) {
   const router = useRouter()
 
@@ -48,6 +52,8 @@ export function ProfileClient({
   return (
     <div className="flex flex-col gap-3.5">
       <ProfileHeader name={name} email={email} avatarInitial={name.charAt(0).toUpperCase()} />
+
+      <AchievementsSummaryCard stats={achievementStats} />
 
       <MembershipCard
         isPremium={isPremium}

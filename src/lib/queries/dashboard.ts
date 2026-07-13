@@ -64,6 +64,16 @@ export async function getStudyStreakDays(userId: string): Promise<number> {
   return streak
 }
 
+export async function getExamAttemptsCount(userId: string): Promise<number> {
+  const supabase = await createClient()
+  const { count } = await supabase
+    .from('exam_attempts')
+    .select('id', { count: 'exact', head: true })
+    .eq('user_id', userId)
+
+  return count ?? 0
+}
+
 export async function getLatestExamAttempt(userId: string): Promise<ExamAttempt | null> {
   const supabase = await createClient()
   const { data } = await supabase
