@@ -6,6 +6,7 @@ import { ChevronLeft } from 'lucide-react'
 import { QuestionCard } from '@/components/practice/QuestionCard'
 import { AnswerOption, type AnswerOptionState } from '@/components/practice/AnswerOption'
 import { ExplanationCard, type ExplanationEntry } from '@/components/practice/ExplanationCard'
+import { CorrectFeedbackBurst } from '@/components/practice/CorrectFeedbackBurst'
 import { TapToRevealPopup } from '@/components/ui/TapToRevealPopup'
 import { FuriganaPill } from '@/components/ui/FuriganaPill'
 import { markQuestionWeak, submitAnswer } from '@/app/(main)/study/[kamokuId]/practice/actions'
@@ -25,6 +26,7 @@ export function CustomSessionClient({ questions, vocabDict }: CustomSessionClien
   const [dictVocab, setDictVocab] = useState<Vocabulary | null>(null)
   const [bookmarked, setBookmarked] = useState(false)
   const [finished, setFinished] = useState(false)
+  const [showBurst, setShowBurst] = useState(false)
 
   if (questions.length === 0) {
     return (
@@ -66,7 +68,9 @@ export function CustomSessionClient({ questions, vocabDict }: CustomSessionClien
   function handleCheck() {
     if (selected === null) return
     setChecked(true)
-    submitAnswer(question.id, selected, selected === question.correct_answer)
+    const isCorrect = selected === question.correct_answer
+    if (isCorrect) setShowBurst(true)
+    submitAnswer(question.id, selected, isCorrect)
   }
 
   function handleNext() {
@@ -79,6 +83,7 @@ export function CustomSessionClient({ questions, vocabDict }: CustomSessionClien
     setChecked(false)
     setDictVocab(null)
     setBookmarked(false)
+    setShowBurst(false)
   }
 
   function handleBookmark() {
@@ -160,6 +165,7 @@ export function CustomSessionClient({ questions, vocabDict }: CustomSessionClien
       </div>
 
       <div className="relative px-3.5 pb-4 pt-4">
+        {showBurst && <CorrectFeedbackBurst />}
         <QuestionCard
           questionNumber={questionIndex + 1}
           difficulty={question.difficulty ?? 'medium'}

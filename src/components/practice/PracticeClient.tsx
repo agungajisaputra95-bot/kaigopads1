@@ -10,6 +10,7 @@ import { QuestionCard } from '@/components/practice/QuestionCard'
 import { AnswerOption, type AnswerOptionState } from '@/components/practice/AnswerOption'
 import { ExplanationCard, type ExplanationEntry } from '@/components/practice/ExplanationCard'
 import { ConceptCard } from '@/components/materi/ConceptCard'
+import { CorrectFeedbackBurst } from '@/components/practice/CorrectFeedbackBurst'
 import { TapToRevealPopup } from '@/components/ui/TapToRevealPopup'
 import { markQuestionWeak, submitAnswer } from '@/app/(main)/study/[kamokuId]/practice/actions'
 import type { KamokuDef } from '@/lib/constants'
@@ -41,6 +42,7 @@ export function PracticeClient({ kamoku, questions, vocabDict, relatedMaterial }
   const [checked, setChecked] = useState(false)
   const [dictVocab, setDictVocab] = useState<Vocabulary | null>(null)
   const [bookmarked, setBookmarked] = useState(false)
+  const [showBurst, setShowBurst] = useState(false)
 
   const question = questions[questionIndex]
   const correctOption = question.options.find((o) => o.option_number === question.correct_answer)!
@@ -49,7 +51,9 @@ export function PracticeClient({ kamoku, questions, vocabDict, relatedMaterial }
   function handleCheck() {
     if (selected === null) return
     setChecked(true)
-    submitAnswer(question.id, selected, selected === question.correct_answer)
+    const isCorrect = selected === question.correct_answer
+    if (isCorrect) setShowBurst(true)
+    submitAnswer(question.id, selected, isCorrect)
   }
 
   function handleNext() {
@@ -58,6 +62,7 @@ export function PracticeClient({ kamoku, questions, vocabDict, relatedMaterial }
     setChecked(false)
     setDictVocab(null)
     setBookmarked(false)
+    setShowBurst(false)
   }
 
   function handleBookmark() {
@@ -141,6 +146,7 @@ export function PracticeClient({ kamoku, questions, vocabDict, relatedMaterial }
       </div>
 
       <div className="relative px-3.5 pb-4 pt-4">
+        {showBurst && <CorrectFeedbackBurst />}
         {mode === 'materi' && !checked && relatedMaterial && (
           <ConceptCard {...relatedMaterial} vocabDict={vocabDict} onWordTap={setDictVocab} />
         )}
