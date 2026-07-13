@@ -16,10 +16,12 @@ export async function confirmPayment(userId: string, months: number) {
   })
 
   revalidatePath('/admin/users')
+  revalidatePath(`/admin/users/${userId}`)
 }
 
 export async function revokePremium(userId: string) {
   const supabase = createAdminClient()
   await supabase.from('user_premium').upsert({ user_id: userId, is_premium: false })
   revalidatePath('/admin/users')
+  revalidatePath(`/admin/users/${userId}`)
 }

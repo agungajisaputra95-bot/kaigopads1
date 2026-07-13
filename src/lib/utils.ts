@@ -40,3 +40,11 @@ export function daysUntil(targetDate: string): number {
 export function daysUntilIso(iso: string): number {
   return Math.ceil((new Date(iso).getTime() - Date.now()) / 86_400_000)
 }
+
+// User pernah belajar tapi sudah lama tidak aktif — kandidat re-engagement (admin Users & Pembayaran).
+export const AT_RISK_INACTIVE_DAYS = 14
+
+export function isUserAtRisk(totalAnswered: number, lastActiveAt: string | null): boolean {
+  if (totalAnswered === 0 || !lastActiveAt) return false
+  return -daysUntilIso(lastActiveAt) >= AT_RISK_INACTIVE_DAYS
+}

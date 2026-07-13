@@ -2,10 +2,11 @@
 
 import { useMemo, useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
-import { ArrowDown, ArrowUp, ArrowUpDown, ChevronLeft, ChevronRight, Search } from 'lucide-react'
+import Link from 'next/link'
+import { ArrowDown, ArrowUp, ArrowUpDown, ChevronLeft, ChevronRight, Download, Search } from 'lucide-react'
 import { confirmPayment, revokePremium } from '@/app/admin/users/actions'
 import type { UserAdminRow } from '@/lib/queries/users'
-import { daysUntilIso, toWaMeNumber } from '@/lib/utils'
+import { daysUntilIso, isUserAtRisk, toWaMeNumber } from '@/lib/utils'
 
 const DURATION_OPTIONS = [
   { months: 1, label: '1 bln' },
@@ -24,6 +25,7 @@ const ACTIVITY_FILTERS = [
   { value: 'all', label: 'Semua' },
   { value: 'active', label: 'Sudah Belajar' },
   { value: 'inactive', label: 'Belum Belajar' },
+  { value: 'at_risk', label: 'At Risk' },
 ] as const
 
 type PremiumFilter = (typeof PREMIUM_FILTERS)[number]['value']
@@ -41,6 +43,50 @@ function formatDate(iso: string | null) {
 
 function daysLeft(iso: string | null): number | null {
   return iso ? daysUntilIso(iso) : null
+}
+
+function toCsv(rows: UserAdminRow[]): string {
+  const header = [
+    'Nama',
+    'Email',
+    'WhatsApp',
+    'Terdaftar',
+    'Soal Dijawab',
+    'Akurasi (%)',
+    'Mock Exam',
+    'Terakhir Aktif',
+    'Status Premium',
+    'Premium Sampai',
+  ]
+  const escape = (v: string) => `"${v.replace(/"/g, '""')}"`
+  const lines = rows.map((u) =>
+    [
+      u.name ?? '',
+      u.email,
+      u.whatsapp ?? '',
+      u.createdAt,
+      String(u.totalAnswered),
+      u.accuracyPct !== null ? String(u.accuracyPct) : '',
+      String(u.examAttemptsCount),
+      u.lastActiveAt ?? '',
+      u.isPremium ? 'Premium' : 'Free',
+      u.premiumUntil ?? '',
+    ]
+      .map(escape)
+      .join(',')
+  )
+  return [header.map(escape).join(','), ...lines].join('\n')
+}
+
+function downloadCsv(rows: UserAdminRow[]) {
+  const csv = toCsv(rows)
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `kaigopads-users-${new Date().toISOString().slice(0, 10)}.csv`
+  a.click()
+  URL.revokeObjectURL(url)
 }
 
 function SortableHeader({
@@ -140,6 +186,7 @@ export function UserManagementClient({ users }: { users: UserAdminRow[] }) {
       }
       if (activityFilter === 'active' && u.totalAnswered === 0) return false
       if (activityFilter === 'inactive' && u.totalAnswered > 0) return false
+      if (activityFilter === 'at_risk' && !isUserAtRisk(u.totalAnswered, u.lastActiveAt)) return false
       if (!q) return true
       return (
         (u.name ?? '').toLowerCase().includes(q) ||
@@ -200,7 +247,14 @@ export function UserManagementClient({ users }: { users: UserAdminRow[] }) {
         </div>
         <FilterChips options={PREMIUM_FILTERS} value={premiumFilter} onChange={updatePremiumFilter} />
         <FilterChips options={ACTIVITY_FILTERS} value={activityFilter} onChange={updateActivityFilter} />
-        <span className="ml-auto text-xs font-semibold text-[#90A4AE]">{filteredUsers.length} ditemukan</span>
+        <span className="text-xs font-semibold text-[#90A4AE]">{filteredUsers.length} ditemukan</span>
+        <button
+          type="button"
+          onClick={() => downloadCsv(filteredUsers)}
+          className="ml-auto flex h-9 items-center gap-1.5 rounded-lg border border-[#CFD8DC] bg-white px-3 text-xs font-bold text-[#37474F]"
+        >
+          <Download size={14} /> Export CSV
+        </button>
       </div>
 
       <div className="overflow-x-auto rounded-xl bg-white shadow-[0_1px_3px_rgba(55,71,79,0.08)]">
@@ -255,8 +309,18 @@ export function UserManagementClient({ users }: { users: UserAdminRow[] }) {
             className="grid min-w-[980px] grid-cols-[1.6fr_auto_auto_auto_auto_auto_auto_auto] items-center gap-4 border-t border-[#ECEFF1] px-5 py-3"
           >
             <div className="min-w-0">
-              <div className="truncate text-sm font-bold text-[#263238]">{u.name ?? u.email}</div>
+              <Link
+                href={`/admin/users/${u.id}`}
+                className="truncate text-sm font-bold text-[#263238] hover:text-[#1565C0] hover:underline"
+              >
+                {u.name ?? u.email}
+              </Link>
               {u.name && <div className="truncate text-xs text-[#90A4AE]">{u.email}</div>}
+              {isUserAtRisk(u.totalAnswered, u.lastActiveAt) && (
+                <span className="mt-0.5 inline-block rounded-full bg-[#E53935]/[0.1] px-1.5 py-0.5 text-[10px] font-bold text-[#C62828]">
+                  At Risk
+                </span>
+              )}
               {u.whatsapp && (
                 <a
                   href={`https://wa.me/${toWaMeNumber(u.whatsapp)}`}

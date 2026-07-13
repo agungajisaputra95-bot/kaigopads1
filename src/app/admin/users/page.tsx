@@ -1,6 +1,6 @@
 import { getUserAdminOverview } from '@/lib/queries/users'
 import { UserManagementClient } from '@/components/admin/UserManagementClient'
-import { daysUntilIso } from '@/lib/utils'
+import { daysUntilIso, isUserAtRisk } from '@/lib/utils'
 
 export default async function UsersPage() {
   const users = await getUserAdminOverview()
@@ -9,6 +9,7 @@ export default async function UsersPage() {
   const expiringSoonCount = users.filter(
     (u) => u.isPremium && u.premiumUntil && daysUntilIso(u.premiumUntil) <= 7
   ).length
+  const atRiskCount = users.filter((u) => isUserAtRisk(u.totalAnswered, u.lastActiveAt)).length
 
   return (
     <>
@@ -32,6 +33,11 @@ export default async function UsersPage() {
           {expiringSoonCount > 0 && (
             <span className="rounded-full bg-[#E53935]/[0.12] px-2.5 py-1 text-xs font-bold text-[#C62828]">
               ⚠ {expiringSoonCount} premium habis ≤7 hari
+            </span>
+          )}
+          {atRiskCount > 0 && (
+            <span className="rounded-full bg-[#E53935]/[0.1] px-2.5 py-1 text-xs font-bold text-[#C62828]">
+              {atRiskCount} at risk
             </span>
           )}
         </div>
