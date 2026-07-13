@@ -10,6 +10,7 @@ const FOCUSED_ROUTE_PATTERNS = [
   /^\/study\/[^/]+\/practice/,
   /^\/study\/[^/]+\/materi/,
   /^\/study\/mock-exam/,
+  /^\/onboarding/,
 ]
 
 // Rute yang punya header sendiri (judul halaman + kontrol khusus) tapi tetap

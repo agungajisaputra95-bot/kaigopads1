@@ -2,7 +2,7 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 import { FREE_KAMOKU_IDS } from '@/lib/constants'
 
-const PROTECTED_PREFIXES = ['/dashboard', '/study', '/analytics', '/profile', '/admin']
+const PROTECTED_PREFIXES = ['/dashboard', '/study', '/analytics', '/profile', '/admin', '/onboarding']
 const AUTH_PATHS = ['/login', '/register']
 
 export async function updateSession(request: NextRequest) {
@@ -50,6 +50,20 @@ export async function updateSession(request: NextRequest) {
   }
 
   if (isAuthPath && user) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/dashboard'
+    return NextResponse.redirect(url)
+  }
+
+  // onboarding_completed cuma di-set eksplisit ke false saat signUp (lihat actions.ts) —
+  // undefined (akun lama) dianggap sudah "selesai" supaya user existing tidak ke-redirect.
+  if (user && user.user_metadata?.onboarding_completed === false && !path.startsWith('/onboarding')) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/onboarding'
+    return NextResponse.redirect(url)
+  }
+
+  if (path.startsWith('/onboarding') && user && user.user_metadata?.onboarding_completed !== false) {
     const url = request.nextUrl.clone()
     url.pathname = '/dashboard'
     return NextResponse.redirect(url)

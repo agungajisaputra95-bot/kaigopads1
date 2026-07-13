@@ -58,7 +58,9 @@ export async function register(_state: RegisterFormState, formData: FormData): P
   const { error } = await supabase.auth.signUp({
     email: validated.data.email,
     password: validated.data.password,
-    options: { data: { full_name: validated.data.name, whatsapp: validated.data.whatsapp } },
+    options: {
+      data: { full_name: validated.data.name, whatsapp: validated.data.whatsapp, onboarding_completed: false },
+    },
   })
 
   if (error) {
