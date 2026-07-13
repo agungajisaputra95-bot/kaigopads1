@@ -30,15 +30,22 @@ export default async function PaymentHistoryPage() {
           <div className="p-6 text-center text-sm text-[#90A4AE]">Belum ada riwayat pembayaran.</div>
         ) : (
           history.map((item) => (
-            <div key={item.id} className="flex items-center justify-between gap-3 border-t border-[#ECEFF1] p-4 first:border-t-0">
-              <div>
-                <div className="text-sm font-bold text-[#263238]">Premium {item.months} bulan</div>
-                <div className="mt-0.5 text-xs text-[#90A4AE]">Dikonfirmasi {formatDate(item.confirmedAt)}</div>
+            <div key={item.id} className="border-t border-[#ECEFF1] p-4 first:border-t-0">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <div className="text-sm font-bold text-[#263238]">Premium {item.months} bulan</div>
+                  <div className="mt-0.5 text-xs text-[#90A4AE]">Dikonfirmasi {formatDate(item.confirmedAt)}</div>
+                </div>
+                <div className="text-right">
+                  <div className="text-xs text-[#90A4AE]">Berlaku s/d</div>
+                  <div className="text-sm font-bold text-[#E65100]">{formatDate(item.premiumUntilAfter)}</div>
+                </div>
               </div>
-              <div className="text-right">
-                <div className="text-xs text-[#90A4AE]">Berlaku s/d</div>
-                <div className="text-sm font-bold text-[#E65100]">{formatDate(item.premiumUntilAfter)}</div>
-              </div>
+              {item.referenceNote && (
+                <div className="mt-2 rounded-lg bg-[#ECEFF1] px-2.5 py-1.5 text-xs text-[#78909C]">
+                  Referensi: {item.referenceNote}
+                </div>
+              )}
             </div>
           ))
         )}

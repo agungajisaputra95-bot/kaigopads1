@@ -1,6 +1,6 @@
 'use client'
 
-import { useTransition } from 'react'
+import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { confirmPayment, revokePremium } from '@/app/admin/users/actions'
 
@@ -26,10 +26,18 @@ export function UserDetailActions({
 }) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
+  const [referenceNote, setReferenceNote] = useState('')
+  const [error, setError] = useState<string | null>(null)
 
   function handleConfirm(months: number) {
+    if (!referenceNote.trim()) {
+      setError('Isi catatan referensi pembayaran dulu (nominal/metode/waktu transfer).')
+      return
+    }
+    setError(null)
     startTransition(async () => {
-      await confirmPayment(userId, months)
+      await confirmPayment(userId, months, referenceNote)
+      setReferenceNote('')
       router.refresh()
     })
   }
@@ -50,6 +58,17 @@ export function UserDetailActions({
       ) : (
         <span className="rounded-full bg-[#ECEFF1] px-2.5 py-1 text-[11px] font-bold text-[#78909C]">Free</span>
       )}
+      {!isPremium && (
+        <input
+          type="text"
+          value={referenceNote}
+          onChange={(e) => setReferenceNote(e.target.value)}
+          placeholder="Catatan referensi transfer (nominal/metode/waktu)…"
+          className="h-8 w-56 rounded-lg border border-[#CFD8DC] px-2.5 text-xs text-[#263238] placeholder:text-[#B0BEC5]"
+        />
+      )}
+      {error && <p className="text-[11px] font-medium text-[#E53935]">{error}</p>}
+
       <div className="flex items-center gap-1.5">
         {isPremium ? (
           <button

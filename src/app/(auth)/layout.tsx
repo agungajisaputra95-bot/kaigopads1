@@ -12,6 +12,17 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
       <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-[0_1px_3px_rgba(55,71,79,0.08)]">
         {children}
       </div>
+      <p className="mt-4 text-center text-[11px] text-[#90A4AE]">
+        Dengan melanjutkan, kamu setuju dengan{' '}
+        <Link href="/terms" className="font-bold text-[#78909C] underline">
+          Syarat & Ketentuan
+        </Link>{' '}
+        dan{' '}
+        <Link href="/privacy" className="font-bold text-[#78909C] underline">
+          Kebijakan Privasi
+        </Link>{' '}
+        kami.
+      </p>
     </div>
   )
 }

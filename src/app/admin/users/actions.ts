@@ -3,7 +3,12 @@
 import { revalidatePath } from 'next/cache'
 import { createAdminClient } from '@/lib/supabase/admin'
 
-export async function confirmPayment(userId: string, months: number) {
+export async function confirmPayment(userId: string, months: number, referenceNote: string) {
+  const note = referenceNote.trim()
+  if (!note) {
+    throw new Error('Catatan referensi pembayaran wajib diisi (nominal/metode/waktu transfer).')
+  }
+
   const supabase = createAdminClient()
   const premiumUntil = new Date()
   premiumUntil.setMonth(premiumUntil.getMonth() + months)
@@ -19,6 +24,7 @@ export async function confirmPayment(userId: string, months: number) {
     user_id: userId,
     months,
     premium_until_after: premiumUntil.toISOString(),
+    reference_note: note,
   })
 
   revalidatePath('/admin/users')

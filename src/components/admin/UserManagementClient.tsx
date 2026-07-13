@@ -215,9 +215,14 @@ export function UserManagementClient({ users }: { users: UserAdminRow[] }) {
   const pagedUsers = filteredUsers.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE)
 
   function handleConfirm(userId: string, months: number) {
+    const referenceNote = window.prompt(
+      'Catatan referensi pembayaran (nominal/metode/waktu transfer):'
+    )
+    if (!referenceNote || !referenceNote.trim()) return
+
     setPendingUserId(userId)
     startTransition(async () => {
-      await confirmPayment(userId, months)
+      await confirmPayment(userId, months, referenceNote)
       router.refresh()
       setPendingUserId(null)
     })

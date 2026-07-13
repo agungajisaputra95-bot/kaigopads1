@@ -212,7 +212,10 @@ create table payment_history (
   user_id uuid references auth.users(id) not null,
   months int not null,
   premium_until_after timestamptz not null,
-  confirmed_at timestamptz default now()
+  confirmed_at timestamptz default now(),
+  -- Catatan referensi transfer (nominal/metode/waktu) yang wajib diisi admin saat konfirmasi,
+  -- supaya ada jejak audit dan admin tidak asal klik konfirmasi tanpa bukti.
+  reference_note text not null default ''
 );
 
 alter table payment_history enable row level security;

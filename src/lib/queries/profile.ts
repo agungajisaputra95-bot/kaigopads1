@@ -36,13 +36,14 @@ export interface PaymentHistoryItem {
   months: number
   premiumUntilAfter: string
   confirmedAt: string
+  referenceNote: string
 }
 
 export async function getMyPaymentHistory(userId: string): Promise<PaymentHistoryItem[]> {
   const supabase = await createClient()
   const { data } = await supabase
     .from('payment_history')
-    .select('id, months, premium_until_after, confirmed_at')
+    .select('id, months, premium_until_after, confirmed_at, reference_note')
     .eq('user_id', userId)
     .order('confirmed_at', { ascending: false })
 
@@ -51,5 +52,6 @@ export async function getMyPaymentHistory(userId: string): Promise<PaymentHistor
     months: row.months,
     premiumUntilAfter: row.premium_until_after,
     confirmedAt: row.confirmed_at,
+    referenceNote: row.reference_note ?? '',
   }))
 }
