@@ -33,8 +33,8 @@ export default async function AdminDashboardPage() {
         <div className="mt-0.5 text-xl font-extrabold text-[#263238]">Dashboard</div>
       </div>
 
-      <div className="flex-1 px-7 py-5">
-        <div className="grid grid-cols-3 gap-3.5">
+      <div className="flex-1 px-4 py-5 md:px-7">
+        <div className="grid grid-cols-2 gap-3.5 md:grid-cols-3">
           {statCards.map(({ icon: Icon, label, value, color }) => (
             <div key={label} className="rounded-xl bg-white p-4 shadow-[0_1px_3px_rgba(55,71,79,0.08)]">
               <div className="flex items-center gap-2">
@@ -49,7 +49,7 @@ export default async function AdminDashboardPage() {
         </div>
 
         <div className="mt-6 text-[13px] font-bold text-[#263238]">Akses Cepat</div>
-        <div className="mt-2.5 grid grid-cols-2 gap-3">
+        <div className="mt-2.5 grid grid-cols-1 gap-3 sm:grid-cols-2">
           {quickLinks.map(({ href, label, description, icon: Icon, available }) => {
             const content = (
               <>

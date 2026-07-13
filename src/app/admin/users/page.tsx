@@ -13,7 +13,7 @@ export default async function UsersPage() {
 
   return (
     <>
-      <div className="border-b border-[#37474F]/[0.08] bg-white px-7 py-4">
+      <div className="border-b border-[#37474F]/[0.08] bg-white px-4 py-4 md:px-7">
         <div className="text-xs text-[#90A4AE]">Users</div>
         <div className="mt-0.5 text-xl font-extrabold text-[#263238]">Users & Pembayaran</div>
         <div className="mt-0.5 text-[13px] text-[#78909C]">
@@ -21,8 +21,8 @@ export default async function UsersPage() {
         </div>
       </div>
 
-      <div className="flex-1 px-7 py-5">
-        <div className="mb-4 flex items-center gap-3 text-sm">
+      <div className="flex-1 px-4 py-5 md:px-7">
+        <div className="mb-4 flex flex-wrap items-center gap-2 text-sm">
           <span className="font-bold text-[#263238]">{users.length} user</span>
           <span className="rounded-full bg-[#43A047]/[0.12] px-2.5 py-1 text-xs font-bold text-[#2E7D32]">
             {activeCount} sudah mulai belajar

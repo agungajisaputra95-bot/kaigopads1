@@ -7,7 +7,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const displayName = user?.user_metadata?.full_name || user?.email || ''
 
   return (
-    <div className="flex min-h-screen bg-[#ECEFF1]">
+    <div className="flex min-h-screen flex-col bg-[#ECEFF1] md:flex-row">
       <AdminSidebar adminName={displayName} />
       <div className="flex min-w-0 flex-1 flex-col">{children}</div>
     </div>
