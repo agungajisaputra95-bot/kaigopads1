@@ -1,6 +1,77 @@
 'use server'
 
+import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
+import {
+  EditProfileSchema,
+  ChangePasswordSchema,
+  type EditProfileFormState,
+  type ChangePasswordFormState,
+} from '@/lib/validations/auth'
+
+export async function updateProfile(_state: EditProfileFormState, formData: FormData): Promise<EditProfileFormState> {
+  const validated = EditProfileSchema.safeParse({
+    name: formData.get('name'),
+    whatsapp: formData.get('whatsapp'),
+  })
+
+  if (!validated.success) {
+    return { errors: validated.error.flatten().fieldErrors }
+  }
+
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user) return { message: 'Sesi kamu berakhir, silakan login ulang.' }
+
+  const { error } = await supabase.auth.updateUser({
+    data: { full_name: validated.data.name, whatsapp: validated.data.whatsapp },
+  })
+
+  if (error) return { message: error.message }
+
+  revalidatePath('/profile')
+  return { success: true, message: 'Profil berhasil diperbarui.' }
+}
+
+export async function changePassword(
+  _state: ChangePasswordFormState,
+  formData: FormData
+): Promise<ChangePasswordFormState> {
+  const validated = ChangePasswordSchema.safeParse({
+    currentPassword: formData.get('currentPassword'),
+    password: formData.get('password'),
+    confirmPassword: formData.get('confirmPassword'),
+  })
+
+  if (!validated.success) {
+    return { errors: validated.error.flatten().fieldErrors }
+  }
+
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user?.email) return { message: 'Sesi kamu berakhir, silakan login ulang.' }
+
+  const { error: verifyError } = await supabase.auth.signInWithPassword({
+    email: user.email,
+    password: validated.data.currentPassword,
+  })
+
+  if (verifyError) {
+    return { errors: { currentPassword: ['Password saat ini salah.'] } }
+  }
+
+  const { error } = await supabase.auth.updateUser({ password: validated.data.password })
+
+  if (error) return { message: error.message }
+
+  return { success: true, message: 'Password berhasil diganti.' }
+}
 
 export interface PushSubscriptionPayload {
   endpoint: string

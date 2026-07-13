@@ -9,23 +9,29 @@ export const LoginSchema = z.object({
 const ID_PHONE = /^(\+62|62|0)8[1-9][0-9]{6,10}$/
 const JP_PHONE = /^(\+81|81|0)[789]0[0-9]{7,8}$/
 
+export const WhatsappSchema = z
+  .string()
+  .trim()
+  .min(1, { error: 'Nomor WhatsApp wajib diisi.' })
+  .transform((v) => v.replace(/[\s-()]/g, ''))
+  .refine((v) => ID_PHONE.test(v) || JP_PHONE.test(v), {
+    error: 'Masukkan nomor WhatsApp Indonesia (08xx / +62) atau Jepang (070/080/090 / +81) yang valid.',
+  })
+
+export const NameSchema = z.string().min(2, { error: 'Nama minimal 2 karakter.' }).trim()
+
+const PasswordSchema = z
+  .string()
+  .min(8, { error: 'Password minimal 8 karakter.' })
+  .regex(/[a-zA-Z]/, { error: 'Password harus mengandung huruf.' })
+  .regex(/[0-9]/, { error: 'Password harus mengandung angka.' })
+
 export const RegisterSchema = z
   .object({
-    name: z.string().min(2, { error: 'Nama minimal 2 karakter.' }).trim(),
+    name: NameSchema,
     email: z.email({ error: 'Masukkan email yang valid.' }),
-    whatsapp: z
-      .string()
-      .trim()
-      .min(1, { error: 'Nomor WhatsApp wajib diisi.' })
-      .transform((v) => v.replace(/[\s-()]/g, ''))
-      .refine((v) => ID_PHONE.test(v) || JP_PHONE.test(v), {
-        error: 'Masukkan nomor WhatsApp Indonesia (08xx / +62) atau Jepang (070/080/090 / +81) yang valid.',
-      }),
-    password: z
-      .string()
-      .min(8, { error: 'Password minimal 8 karakter.' })
-      .regex(/[a-zA-Z]/, { error: 'Password harus mengandung huruf.' })
-      .regex(/[0-9]/, { error: 'Password harus mengandung angka.' }),
+    whatsapp: WhatsappSchema,
+    password: PasswordSchema,
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -63,11 +69,7 @@ export const ForgotPasswordSchema = z.object({
 
 export const ResetPasswordSchema = z
   .object({
-    password: z
-      .string()
-      .min(8, { error: 'Password minimal 8 karakter.' })
-      .regex(/[a-zA-Z]/, { error: 'Password harus mengandung huruf.' })
-      .regex(/[0-9]/, { error: 'Password harus mengandung angka.' }),
+    password: PasswordSchema,
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -86,6 +88,38 @@ export type ForgotPasswordFormState =
 export type ResetPasswordFormState =
   | {
       errors?: { password?: string[]; confirmPassword?: string[] }
+      message?: string
+      success?: boolean
+    }
+  | undefined
+
+export const EditProfileSchema = z.object({
+  name: NameSchema,
+  whatsapp: WhatsappSchema,
+})
+
+export type EditProfileFormState =
+  | {
+      errors?: { name?: string[]; whatsapp?: string[] }
+      message?: string
+      success?: boolean
+    }
+  | undefined
+
+export const ChangePasswordSchema = z
+  .object({
+    currentPassword: z.string().min(1, { error: 'Password saat ini wajib diisi.' }),
+    password: PasswordSchema,
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    error: 'Konfirmasi password tidak cocok.',
+    path: ['confirmPassword'],
+  })
+
+export type ChangePasswordFormState =
+  | {
+      errors?: { currentPassword?: string[]; password?: string[]; confirmPassword?: string[] }
       message?: string
       success?: boolean
     }

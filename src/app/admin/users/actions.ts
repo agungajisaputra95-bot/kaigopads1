@@ -15,6 +15,12 @@ export async function confirmPayment(userId: string, months: number) {
     payment_confirmed_at: new Date().toISOString(),
   })
 
+  await supabase.from('payment_history').insert({
+    user_id: userId,
+    months,
+    premium_until_after: premiumUntil.toISOString(),
+  })
+
   revalidatePath('/admin/users')
   revalidatePath(`/admin/users/${userId}`)
 }

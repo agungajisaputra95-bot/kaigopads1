@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { ShieldCheck } from 'lucide-react'
 import { ProfileHeader } from '@/components/profile/ProfileHeader'
 import { MembershipCard } from '@/components/profile/MembershipCard'
+import { AccountLinksCard } from '@/components/profile/AccountLinksCard'
 import { SettingsList } from '@/components/profile/SettingsList'
 import { FeedbackCard } from '@/components/profile/FeedbackCard'
 import { createClient } from '@/lib/supabase/client'
@@ -54,6 +55,8 @@ export function ProfileClient({
         paywallKamoku={paywallKamoku}
         whatsappHref={whatsappHref}
       />
+
+      <AccountLinksCard />
 
       {isAdmin && (
         <Link

@@ -30,3 +30,26 @@ export async function hasActivePushSubscription(userId: string): Promise<boolean
 
   return (count ?? 0) > 0
 }
+
+export interface PaymentHistoryItem {
+  id: string
+  months: number
+  premiumUntilAfter: string
+  confirmedAt: string
+}
+
+export async function getMyPaymentHistory(userId: string): Promise<PaymentHistoryItem[]> {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('payment_history')
+    .select('id, months, premium_until_after, confirmed_at')
+    .eq('user_id', userId)
+    .order('confirmed_at', { ascending: false })
+
+  return (data ?? []).map((row) => ({
+    id: row.id,
+    months: row.months,
+    premiumUntilAfter: row.premium_until_after,
+    confirmedAt: row.confirmed_at,
+  }))
+}

@@ -204,3 +204,18 @@ alter table push_subscriptions enable row level security;
 
 create policy "User kelola push_subscriptions miliknya sendiri" on push_subscriptions
   for all to authenticated using (auth.uid() = user_id) with check (auth.uid() = user_id);
+
+-- Log tiap konfirmasi pembayaran manual oleh admin (user_premium cuma nyimpan status terkini,
+-- bukan histori) — dipakai halaman "Riwayat Pembayaran" di Profil.
+create table payment_history (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references auth.users(id) not null,
+  months int not null,
+  premium_until_after timestamptz not null,
+  confirmed_at timestamptz default now()
+);
+
+alter table payment_history enable row level security;
+
+create policy "User lihat payment_history miliknya sendiri" on payment_history
+  for select to authenticated using (auth.uid() = user_id);
