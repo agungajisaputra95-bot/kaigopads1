@@ -4,7 +4,7 @@ import { useMemo, useState, useTransition } from 'react'
 import { QuestionEditorForm, type DifficultyLabel, type OptionDraft } from '@/components/admin/QuestionEditorForm'
 import { MetadataPanel, type ExamFreqLabel, type MateriLinkOption } from '@/components/admin/MetadataPanel'
 import { LivePreviewCard } from '@/components/admin/LivePreviewCard'
-import { saveQuestion } from '@/app/admin/questions/actions'
+import { saveQuestion, uploadQuestionImage } from '@/app/admin/questions/actions'
 import { KAMOKU_LIST, type KamokuPart } from '@/lib/constants'
 import type { MaterialSection, Vocabulary } from '@/types/material'
 
@@ -16,6 +16,7 @@ interface QuestionEditorClientProps {
   initialSource: string
   initialDifficulty: DifficultyLabel
   initialQuestionText: string
+  initialImageUrl: string | null
   initialOptions: OptionDraft[]
   initialCorrectOption: number
   initialFrequency: ExamFreqLabel
@@ -33,6 +34,7 @@ export function QuestionEditorClient({
   initialSource,
   initialDifficulty,
   initialQuestionText,
+  initialImageUrl,
   initialOptions,
   initialCorrectOption,
   initialFrequency,
@@ -48,6 +50,9 @@ export function QuestionEditorClient({
   const [source, setSource] = useState(initialSource)
   const [difficulty, setDifficulty] = useState<DifficultyLabel>(initialDifficulty)
   const [questionText, setQuestionText] = useState(initialQuestionText)
+  const [imageUrl, setImageUrl] = useState<string | null>(initialImageUrl)
+  const [imageUploading, setImageUploading] = useState(false)
+  const [imageError, setImageError] = useState<string | null>(null)
   const [options, setOptions] = useState<OptionDraft[]>(initialOptions)
   const [correctOption, setCorrectOption] = useState(initialCorrectOption)
   const [vocabChips, setVocabChips] = useState<string[]>(initialVocabKanji)
@@ -103,6 +108,21 @@ export function QuestionEditorClient({
     setOptions((prev) => prev.map((o, i) => (i === index ? { ...o, explanation } : o)))
   }
 
+  async function handleImageSelect(file: File) {
+    setImageError(null)
+    setImageUploading(true)
+    try {
+      const formData = new FormData()
+      formData.set('file', file)
+      const { url } = await uploadQuestionImage(formData)
+      setImageUrl(url)
+    } catch (err) {
+      setImageError(err instanceof Error ? err.message : 'Gagal upload gambar.')
+    } finally {
+      setImageUploading(false)
+    }
+  }
+
   function handleSave() {
     setJustSaved(false)
     const furiganaMap = vocabChips
@@ -122,6 +142,7 @@ export function QuestionEditorClient({
         frequency,
         furiganaMap,
         materialSectionIds: [...linkedMaterialIds],
+        imageUrl,
       })
       setJustSaved(true)
     })
@@ -171,6 +192,11 @@ export function QuestionEditorClient({
           onDifficultyChange={setDifficulty}
           questionText={questionText}
           onQuestionTextChange={setQuestionText}
+          imageUrl={imageUrl}
+          onImageSelect={handleImageSelect}
+          onImageRemove={() => setImageUrl(null)}
+          imageUploading={imageUploading}
+          imageError={imageError}
           options={options}
           correctOption={correctOption}
           onSetCorrect={setCorrectOption}

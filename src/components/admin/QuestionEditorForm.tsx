@@ -27,6 +27,11 @@ interface QuestionEditorFormProps {
   onDifficultyChange: (difficulty: DifficultyLabel) => void
   questionText: string
   onQuestionTextChange: (text: string) => void
+  imageUrl: string | null
+  onImageSelect: (file: File) => void
+  onImageRemove: () => void
+  imageUploading: boolean
+  imageError: string | null
   options: OptionDraft[]
   correctOption: number
   onSetCorrect: (num: number) => void
@@ -54,6 +59,11 @@ export function QuestionEditorForm({
   onDifficultyChange,
   questionText,
   onQuestionTextChange,
+  imageUrl,
+  onImageSelect,
+  onImageRemove,
+  imageUploading,
+  imageError,
   options,
   correctOption,
   onSetCorrect,
@@ -166,6 +176,41 @@ export function QuestionEditorForm({
             placeholder="例：利用者が排尿時に不安を感じている場合の対応として、最も適切なものはどれか。"
             className="jp h-[92px] w-full resize-y p-3 text-sm leading-relaxed text-[#263238]"
           />
+        </div>
+
+        <div className="mt-3.5">
+          <label className="mb-2 block text-[11px] font-bold text-[#78909C]">
+            Gambar Soal <span className="font-medium text-[#B0BEC5]">(opsional, mis. diagram/kasus)</span>
+          </label>
+          {imageUrl ? (
+            <div className="relative w-fit">
+              {/* eslint-disable-next-line @next/next/no-img-element -- preview gambar hasil upload dinamis dari Supabase Storage */}
+              <img src={imageUrl} alt="Preview gambar soal" className="max-h-40 rounded-lg border border-[#CFD8DC]" />
+              <button
+                type="button"
+                onClick={onImageRemove}
+                className="absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-[#E53935] text-xs font-bold text-white"
+              >
+                ✕
+              </button>
+            </div>
+          ) : (
+            <label className="flex h-[70px] w-full cursor-pointer items-center justify-center rounded-lg border-[1.5px] border-dashed border-[#CFD8DC] text-xs font-semibold text-[#90A4AE]">
+              {imageUploading ? 'Mengupload…' : '+ Upload gambar (PNG/JPEG/WEBP, maks 5MB)'}
+              <input
+                type="file"
+                accept="image/png,image/jpeg,image/webp"
+                className="hidden"
+                disabled={imageUploading}
+                onChange={(e) => {
+                  const file = e.target.files?.[0]
+                  if (file) onImageSelect(file)
+                  e.target.value = ''
+                }}
+              />
+            </label>
+          )}
+          {imageError && <p className="mt-1.5 text-xs text-[#E53935]">{imageError}</p>}
         </div>
       </div>
 

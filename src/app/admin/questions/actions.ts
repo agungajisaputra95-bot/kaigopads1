@@ -20,6 +20,39 @@ export interface SaveQuestionInput {
   frequency: 'High' | 'Medium' | 'Low'
   furiganaMap: { kanji: string; reading: string }[]
   materialSectionIds: string[]
+  imageUrl: string | null
+}
+
+const MAX_IMAGE_BYTES = 5 * 1024 * 1024
+const ALLOWED_IMAGE_TYPES = ['image/png', 'image/jpeg', 'image/webp']
+
+export async function uploadQuestionImage(formData: FormData): Promise<{ url: string }> {
+  const file = formData.get('file')
+  if (!(file instanceof File)) {
+    throw new Error('File gambar tidak valid.')
+  }
+  if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+    throw new Error('Format gambar harus PNG, JPEG, atau WEBP.')
+  }
+  if (file.size > MAX_IMAGE_BYTES) {
+    throw new Error('Ukuran gambar maksimal 5MB.')
+  }
+
+  const supabase = createAdminClient()
+  const ext = file.type === 'image/png' ? 'png' : file.type === 'image/webp' ? 'webp' : 'jpg'
+  const path = `${crypto.randomUUID()}.${ext}`
+
+  const { error } = await supabase.storage.from('question-images').upload(path, file, {
+    contentType: file.type,
+    upsert: false,
+  })
+
+  if (error) {
+    throw new Error(`Gagal upload gambar: ${error.message}`)
+  }
+
+  const { data } = supabase.storage.from('question-images').getPublicUrl(path)
+  return { url: data.publicUrl }
 }
 
 async function syncMaterialLinks(
@@ -55,6 +88,7 @@ export async function saveQuestion(input: SaveQuestionInput) {
         correct_answer: input.correctOption,
         exam_frequency: examFrequency,
         furigana_map: input.furiganaMap,
+        image_url: input.imageUrl,
       })
       .eq('id', input.id)
 
@@ -88,6 +122,7 @@ export async function saveQuestion(input: SaveQuestionInput) {
       correct_answer: input.correctOption,
       exam_frequency: examFrequency,
       furigana_map: input.furiganaMap,
+      image_url: input.imageUrl,
     })
     .select('id')
     .single()

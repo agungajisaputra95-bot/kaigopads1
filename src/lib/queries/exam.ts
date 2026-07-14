@@ -15,6 +15,7 @@ export interface MockExamQuestion {
   part: KamokuPart
   textJp: string
   furiganaMap: FuriganaMapEntry[]
+  imageUrl: string | null
   options: MockExamOption[]
   correctAnswer: number
 }
@@ -34,7 +35,7 @@ export async function getExamQuestions(sourceFilter?: string): Promise<MockExamQ
   const supabase = await createClient()
   let query = supabase
     .from('questions')
-    .select('id, kamoku_id, question_text_jp, correct_answer, furigana_map, question_options(*)')
+    .select('id, kamoku_id, question_text_jp, correct_answer, furigana_map, image_url, question_options(*)')
     .not('correct_answer', 'is', null)
 
   if (sourceFilter) {
@@ -67,6 +68,7 @@ export async function getExamQuestions(sourceFilter?: string): Promise<MockExamQ
       part: kamoku?.part ?? 'A',
       textJp: row.question_text_jp,
       furiganaMap: (row.furigana_map as FuriganaMapEntry[]) ?? [],
+      imageUrl: row.image_url as string | null,
       options,
       correctAnswer: row.correct_answer as number,
     }

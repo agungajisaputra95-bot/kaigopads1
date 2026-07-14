@@ -13,6 +13,7 @@ interface QuestionCardProps {
   difficulty: QuestionDifficulty
   text: string
   furiganaMap: FuriganaMapEntry[]
+  imageUrl?: string | null
   vocabDict: Record<string, Vocabulary>
   onWordTap: (vocab: Vocabulary) => void
 }
@@ -22,6 +23,7 @@ export function QuestionCard({
   difficulty,
   text,
   furiganaMap,
+  imageUrl,
   vocabDict,
   onWordTap,
 }: QuestionCardProps) {
@@ -46,6 +48,14 @@ export function QuestionCard({
           onWordTap={onWordTap}
           className="jp block text-[16px] font-medium leading-[1.9] tracking-wide text-[#263238]"
         />
+        {imageUrl && (
+          // eslint-disable-next-line @next/next/no-img-element -- gambar soal via URL Supabase Storage dinamis, tidak cocok dioptimasi next/image
+          <img
+            src={imageUrl}
+            alt={`Ilustrasi soal Q${questionNumber}`}
+            className="mt-3 max-h-72 w-full rounded-lg border border-[#ECEFF1] object-contain"
+          />
+        )}
       </div>
     </div>
   )

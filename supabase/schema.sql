@@ -38,6 +38,9 @@ create table questions (
   correct_answer smallint check (correct_answer between 1 and 5),
   exam_frequency text check (exam_frequency in ('high','medium','low')),
   furigana_map jsonb,
+  -- URL gambar soal (mis. diagram/kasus bergambar dari soal asli), diupload admin ke
+  -- Supabase Storage bucket 'question-images'. Null kalau soal tidak ada gambar.
+  image_url text,
   created_at timestamptz default now()
 );
 
@@ -222,3 +225,10 @@ alter table payment_history enable row level security;
 
 create policy "User lihat payment_history miliknya sendiri" on payment_history
   for select to authenticated using (auth.uid() = user_id);
+
+-- Storage bucket untuk gambar soal (diagram/kasus bergambar). Public read supaya
+-- <img> di halaman latihan bisa langsung load; upload/hapus cuma lewat Admin
+-- (server action pakai service-role client, jadi bypass RLS storage.objects).
+insert into storage.buckets (id, name, public)
+values ('question-images', 'question-images', true)
+on conflict (id) do nothing;

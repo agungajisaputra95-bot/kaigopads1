@@ -213,6 +213,14 @@ export function MockExamClient({ questions, initialYear, initialYearDate, previo
         <div className="flex flex-1 flex-col px-3.5 py-4">
           <div className="font-mono text-[13px] font-bold text-[#90A4AE]">Q{question.number}</div>
           <div className="jp mt-2 text-base font-medium leading-[1.7] text-[#263238]">{question.textJp}</div>
+          {question.imageUrl && (
+            // eslint-disable-next-line @next/next/no-img-element -- gambar soal via URL Supabase Storage dinamis, tidak cocok dioptimasi next/image
+            <img
+              src={question.imageUrl}
+              alt={`Ilustrasi soal Q${question.number}`}
+              className="mt-3 max-h-72 w-full rounded-xl border border-[#ECEFF1] object-contain"
+            />
+          )}
 
           <div className="mt-4 flex flex-col gap-2">
             {question.options.map((opt) => (

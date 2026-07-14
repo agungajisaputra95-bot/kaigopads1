@@ -15,6 +15,7 @@ export interface Question {
   correct_answer: number
   exam_frequency: ExamFrequency | null
   furigana_map: FuriganaMapEntry[] | null
+  image_url: string | null
   created_at: string
 }
 

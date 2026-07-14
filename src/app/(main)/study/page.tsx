@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { BookText, Timer, History, RotateCcw, SlidersHorizontal, BookMarked, ChevronRight } from 'lucide-react'
+import { BookText, Timer, History, RotateCcw, SlidersHorizontal, BookMarked, Layers, ChevronRight } from 'lucide-react'
 
 const STUDY_MODES = [
   {
@@ -43,6 +43,13 @@ const STUDY_MODES = [
     color: '#00897B',
     title: 'Kosakata',
     description: 'Kamus istilah penting dari semua kamoku',
+  },
+  {
+    href: '/study/flashcard',
+    icon: Layers,
+    color: '#00897B',
+    title: 'Flashcard',
+    description: 'Hafalkan kosakata cepat dengan kartu tap-to-flip',
   },
 ] as const
 

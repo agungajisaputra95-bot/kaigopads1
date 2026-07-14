@@ -171,6 +171,7 @@ export function CustomSessionClient({ questions, vocabDict }: CustomSessionClien
           difficulty={question.difficulty ?? 'medium'}
           text={question.question_text_jp}
           furiganaMap={question.furigana_map ?? []}
+          imageUrl={question.image_url}
           vocabDict={vocabDict}
           onWordTap={setDictVocab}
         />

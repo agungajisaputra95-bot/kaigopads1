@@ -15,6 +15,7 @@ export default async function NewQuestionPage() {
       initialSource="Original"
       initialDifficulty="Medium"
       initialQuestionText=""
+      initialImageUrl={null}
       initialOptions={EMPTY_OPTIONS}
       initialCorrectOption={0}
       initialFrequency="Medium"

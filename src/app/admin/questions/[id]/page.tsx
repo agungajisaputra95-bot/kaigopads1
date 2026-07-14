@@ -53,6 +53,7 @@ export default async function EditQuestionPage({ params }: { params: Promise<{ i
       initialSource={question.source ?? 'Original'}
       initialDifficulty={DIFFICULTY_DISPLAY[question.difficulty ?? ''] ?? 'Medium'}
       initialQuestionText={question.question_text_jp}
+      initialImageUrl={question.image_url}
       initialOptions={options}
       initialCorrectOption={question.correct_answer ?? 0}
       initialFrequency={FREQUENCY_DISPLAY[question.exam_frequency ?? ''] ?? 'Medium'}
